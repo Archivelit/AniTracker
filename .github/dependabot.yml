@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/src"
+    directory: "/"
     schedule:
       interval: "weekly"
     labels:
@@ -9,7 +9,7 @@ updates:
     - "backend-related"
 
   - package-ecosystem: "npm"
-    directory: "/src/AniTrack.Frontend"
+    directory: "/src/AniTrack.Frontend/src"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
