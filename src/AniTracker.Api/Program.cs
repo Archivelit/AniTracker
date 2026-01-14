@@ -1,6 +1,10 @@
+using AniTracker.ServiceDefaults.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+
+builder.AddServiceDefaults();
 
 var app = builder.Build();
 
