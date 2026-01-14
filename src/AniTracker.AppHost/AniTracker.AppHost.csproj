@@ -8,4 +8,8 @@
     <UserSecretsId>c11d33bc-f63e-471d-8008-4d65def1919a</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AniTracker.Api\AniTracker.Api.csproj" />
+  </ItemGroup>
+
 </Project>
