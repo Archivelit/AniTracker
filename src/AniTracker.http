@@ -1,6 +1,0 @@
-@AniTracker_HostAddress = http://localhost:5076
-
-GET {{AniTracker_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
