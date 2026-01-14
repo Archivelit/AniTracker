@@ -1,5 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/AniTracker.csproj" />
+    <Project Path="src/AniTracker.Api/AniTracker.Api.csproj" />
   </Folder>
 </Solution>
