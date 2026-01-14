@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/src"
+    schedule:
+      interval: "weekly"
+    labels:
+    - "enhancement"
+    - "backend-related"
+
+  - package-ecosystem: "npm"
+    directory: "/src/AniTrack.Frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "enhancement"
+      - "frontend-related"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "enhancement"
+      - "ci-related"
