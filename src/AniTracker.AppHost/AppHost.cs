@@ -10,4 +10,9 @@ var backendApi = builder.AddProject<Projects.AniTracker_Api>("api")
                         .WithReference(apiDb)
                         .WaitFor(apiDb);
 
+var frontend = builder.AddJavaScriptApp("frontend", "../AniTracker.Frontend/src/", "dev")
+                      .WithReference(backendApi)
+                      .WithPnpm()
+                      .WithHttpEndpoint(3000, 3000, isProxied: false);
+
 builder.Build().Run();
