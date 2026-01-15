@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace AniTracker.Api.Endpoints;
+﻿namespace AniTracker.Api.Endpoints;
 
 public static class UserEndpoints
 {
@@ -20,25 +18,35 @@ public static class UserEndpoints
     private static async Task<IResult> GetUserById(Guid id, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        var user = await dbContext.Users.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Id == id, ct)
-            .ConfigureAwait(false);
-        
-        return user is null 
-            ? Results.Ok(user)
-            : Results.NotFound("User not found");
+        try
+        {
+            var user = await dbContext.Users.AsNoTracking()
+                .Where(u => u.Id == id)
+                .FirstAsync(ct)
+                .ConfigureAwait(false);
+            return Results.Ok(user);
+        }
+        catch
+        {
+            return Results.NotFound("User not found");
+        }
     }
     
     private static async Task<IResult> GetUserByEmail(string email, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        var user = await dbContext.Users.AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email == email, ct)
-            .ConfigureAwait(false);
-        
-        return user is null 
-            ? Results.Ok(user)
-            : Results.NotFound("User not found");
+        try
+        {
+            var user = await dbContext.Users.AsNoTracking()
+                .Where(u => u.Email == email)
+                .FirstAsync(ct)
+                .ConfigureAwait(false);
+            return Results.Ok(user);
+        }
+        catch
+        {
+            return Results.NotFound("User not found");
+        }
     }
 
     private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
@@ -85,7 +93,6 @@ public static class UserEndpoints
                     builder.UpdateIfNotNull(user => user.PasswordHash, passwordHash);
                 }, ct)
                 .ConfigureAwait(false);
-            
             return Results.Ok();
         }
         catch (Exception ex)
