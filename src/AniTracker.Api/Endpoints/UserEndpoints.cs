@@ -1,4 +1,6 @@
-﻿namespace AniTracker.Api.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace AniTracker.Api.Endpoints;
 
 public static class UserEndpoints
 {
@@ -24,7 +26,7 @@ public static class UserEndpoints
         
         return user is null 
             ? Results.Ok(user)
-            : Results.NotFound();
+            : Results.NotFound("User not found");
     }
     
     private static async Task<IResult> GetUserByEmail(string email, AniTrackerDbContext dbContext, 
@@ -36,12 +38,13 @@ public static class UserEndpoints
         
         return user is null 
             ? Results.Ok(user)
-            : Results.NotFound();
+            : Results.NotFound("User not found");
     }
 
     private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
-        ILogger logger, CancellationToken ct)
+        ILoggerFactory loggerFactory, CancellationToken ct)
     {
+        var logger = loggerFactory.CreateLogger("UserEndpoints");
         // TODO: add password hashing
         var passwordHash = string.Empty;
         
@@ -61,8 +64,9 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
-        AniTrackerDbContext dbContext, ILogger logger, CancellationToken ct)
+        AniTrackerDbContext dbContext, ILoggerFactory loggerFactory, CancellationToken ct)
     {
+        var logger = loggerFactory.CreateLogger("UserEndpoints");
         string? passwordHash = null;
         
         if (updateUserDto.Password is not null)

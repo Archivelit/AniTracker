@@ -2,12 +2,12 @@
 
 public class RegisterUserValidationFilter : IEndpointFilter
 {
-    private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest());
+    private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
 
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (!(invocationContext.Arguments[0] is RegisterUserDto regUserDto))
+        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto)
         {
             return BadRequest;
         }
@@ -19,6 +19,9 @@ public class RegisterUserValidationFilter : IEndpointFilter
 
     private static bool IsValidDto(RegisterUserDto dto)
     {
+        if (dto is null || dto.Username is null)
+            return false;
+
         dto = dto with
         {
             Username = dto.Username.Trim()
@@ -27,7 +30,7 @@ public class RegisterUserValidationFilter : IEndpointFilter
         if (!dto.Email.IsValidEmail())
             return false;
 
-        if (dto.Username.Length < 3 || dto.Username.Any(char.IsLetter))
+        if (dto.Username.Length < 3 || !dto.Username.Any(char.IsLetter))
             return false;
 
         if (dto.Password.Length < 8)

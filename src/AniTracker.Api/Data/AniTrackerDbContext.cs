@@ -2,23 +2,26 @@
 
 internal class AniTrackerDbContext : DbContext
 {
-    internal DbSet<User> Users;
-    internal DbSet<Media> Medias;
-    internal DbSet<UserMedia> UsersMedia;
+    public DbSet<User> Users { get; set; }
+    public DbSet<Media> Medias { get; set; }
+    public DbSet<UserMedia> UsersMedia { get; set; }
 
     public AniTrackerDbContext(DbContextOptions<AniTrackerDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var users = modelBuilder.Entity<User>();
+
+
         users.ToTable("Users");
-        
+
         users.HasKey(u => u.Id);
         users.HasIndex(u => u.Email).IsUnique();
-        users.Property(u => u.Username).HasMaxLength(50);
-        users.Property(u => u.PasswordHash);
+        users.Property(u => u.Username).HasMaxLength(50).IsRequired();
+        users.Property(u => u.PasswordHash).IsRequired();
 
         var medias = modelBuilder.Entity<Media>();
+
         medias.ToTable("Medias");
 
         medias.HasKey(m => m.Id);
@@ -32,6 +35,7 @@ internal class AniTrackerDbContext : DbContext
         medias.Property(m => m.Status);
 
         var usersMedia = modelBuilder.Entity<UserMedia>();
+
         usersMedia.ToTable("UsersMedia");
 
         usersMedia.HasKey(u => u.Id);
