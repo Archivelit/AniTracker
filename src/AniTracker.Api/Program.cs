@@ -1,8 +1,3 @@
-using AniTracker.Api.Data;
-using AniTracker.ServiceDefaults.Extensions.Hosting;
-
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
