@@ -5,7 +5,9 @@ global using AniTracker.Api.Models;
 global using AniTracker.Api.Helpers;
 global using AniTracker.Api.Contracts;
 global using AniTracker.Api.Endpoints;
+global using AniTracker.Api.Exceptions;
 global using AniTracker.Api.Extensions;
+global using AniTracker.Api.Middlewares;
 global using AniTracker.Api.Endpoints.Filters;
 global using AniTracker.ServiceDefaults.Extensions.Hosting;
 

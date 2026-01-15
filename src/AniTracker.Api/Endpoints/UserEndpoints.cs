@@ -47,17 +47,9 @@ public static class UserEndpoints
         
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash);
 
-        try
-        {
-            await dbContext.Users.AddAsync(user, ct).ConfigureAwait(false);
-            await dbContext.SaveChangesAsync(ct);
-            return Results.Created($"/users/{user.Id}", user);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error occured during user registration");
-            return Results.InternalServerError();
-        }
+        await dbContext.Users.AddAsync(user, ct).ConfigureAwait(false);
+        await dbContext.SaveChangesAsync(ct);
+        return Results.Created($"/users/{user.Id}", user);
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
@@ -71,23 +63,15 @@ public static class UserEndpoints
             passwordHash = hasher.Hash(updateUserDto.Password);
         }
         
-        try
-        {
-            var updatedFields = await dbContext.Users.Where(u => u.Id == id)
-                .ExecuteUpdateAsync(builder =>
-                {
-                    builder.UpdateIfNotNull(user => user.Username, updateUserDto.Username);
-                    builder.UpdateIfNotNull(user => user.Email, updateUserDto.Email);
-                    builder.UpdateIfNotNull(user => user.PasswordHash, passwordHash);
-                }, ct)
-                .ConfigureAwait(false);
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error occured during user update");
-            return Results.InternalServerError();
-        }
+        var updatedFields = await dbContext.Users.Where(u => u.Id == id)
+            .ExecuteUpdateAsync(builder =>
+            {
+                builder.UpdateIfNotNull(user => user.Username, updateUserDto.Username);
+                builder.UpdateIfNotNull(user => user.Email, updateUserDto.Email);
+                builder.UpdateIfNotNull(user => user.PasswordHash, passwordHash);
+            }, ct)
+            .ConfigureAwait(false);
+        return Results.Ok();
     }
 
     private static void UpdateIfNotNull<TProperty>(this UpdateSettersBuilder<User> builder, 

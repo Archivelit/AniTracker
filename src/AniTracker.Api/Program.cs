@@ -7,6 +7,7 @@ builder.Services.AddDbContext<AniTrackerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("api-database"));
 });
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<ExceptionMiddleware>();
 
 builder.AddServiceDefaults();
 
@@ -21,6 +22,7 @@ app.MapDefaultEndpoints();
 app.MapUserEndpoints();
 
 app.UseHttpsRedirection();
+app.UseException();
 
 if (app.Environment.IsDevelopment())
 {
