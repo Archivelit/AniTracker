@@ -1,3 +1,3 @@
 ﻿namespace AniTracker.Api.Dto;
 
-public record UpdateUserDto();
+public record UpdateUserDto(string? Email, string? Username, string? Password);

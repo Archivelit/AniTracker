@@ -1,4 +1,4 @@
-﻿namespace AniTracker.Api.Enums.Filters;
+﻿namespace AniTracker.Api.Endpoints.Filters;
 
 public class RegisterUserValidationFilter : IEndpointFilter
 {

@@ -1,3 +1,5 @@
+using AniTracker.Api.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -15,7 +17,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapHealthChecks("/health");
+app.MapDefaultEndpoints();
+app.MapUserEndpoints();
 
 app.UseHttpsRedirection();
 

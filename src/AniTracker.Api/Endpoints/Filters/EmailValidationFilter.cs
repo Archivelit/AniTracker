@@ -1,4 +1,4 @@
-﻿namespace AniTracker.Api.Filters;
+﻿namespace AniTracker.Api.Endpoints.Filters;
 
 public class EmailValidationFilter : IEndpointFilter
 {
