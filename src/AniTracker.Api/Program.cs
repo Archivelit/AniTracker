@@ -6,6 +6,7 @@ builder.Services.AddDbContext<AniTrackerDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("api-database"));
 });
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.AddServiceDefaults();
 

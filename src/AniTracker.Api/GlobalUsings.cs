@@ -2,6 +2,8 @@
 global using AniTracker.Api.Data;
 global using AniTracker.Api.Enums;
 global using AniTracker.Api.Models;
+global using AniTracker.Api.Helpers;
+global using AniTracker.Api.Contracts;
 global using AniTracker.Api.Endpoints;
 global using AniTracker.Api.Extensions;
 global using AniTracker.Api.Endpoints.Filters;

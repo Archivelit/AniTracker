@@ -18,43 +18,32 @@ public static class UserEndpoints
     private static async Task<IResult> GetUserById(Guid id, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        try
-        {
-            var user = await dbContext.Users.AsNoTracking()
-                .Where(u => u.Id == id)
-                .FirstAsync(ct)
-                .ConfigureAwait(false);
-            return Results.Ok(user);
-        }
-        catch
-        {
-            return Results.NotFound("User not found");
-        }
+        var user = await dbContext.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id, ct)
+            .ConfigureAwait(false);
+
+        return user is not null
+            ? Results.Ok(user)
+            : Results.NotFound("User not found");
     }
-    
+
     private static async Task<IResult> GetUserByEmail(string email, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        try
-        {
-            var user = await dbContext.Users.AsNoTracking()
-                .Where(u => u.Email == email)
-                .FirstAsync(ct)
-                .ConfigureAwait(false);
-            return Results.Ok(user);
-        }
-        catch
-        {
-            return Results.NotFound("User not found");
-        }
+        var user = await dbContext.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email, ct)
+            .ConfigureAwait(false);
+
+        return user is not null
+            ? Results.Ok(user)
+            : Results.NotFound("User not found");
     }
 
     private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
-        ILoggerFactory loggerFactory, CancellationToken ct)
+        ILoggerFactory loggerFactory, IPasswordHasher hasher, CancellationToken ct)
     {
         var logger = loggerFactory.CreateLogger("UserEndpoints");
-        // TODO: add password hashing
-        var passwordHash = string.Empty;
+        var passwordHash = hasher.Hash(registerUserDto.Password);
         
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash);
 
@@ -72,15 +61,14 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
-        AniTrackerDbContext dbContext, ILoggerFactory loggerFactory, CancellationToken ct)
+        AniTrackerDbContext dbContext, ILoggerFactory loggerFactory, IPasswordHasher hasher, CancellationToken ct)
     {
         var logger = loggerFactory.CreateLogger("UserEndpoints");
         string? passwordHash = null;
         
         if (updateUserDto.Password is not null)
         {
-            // TODO: add password hashing
-            passwordHash = string.Empty;
+            passwordHash = hasher.Hash(updateUserDto.Password);
         }
         
         try
