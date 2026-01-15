@@ -7,25 +7,24 @@ public class ExceptionMiddleware : IMiddleware
 
     public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger) => _logger = logger;
 
-    public Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
         {
-            return next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
-            ProcessException(context, ex);
-            return Task.CompletedTask;
+            await ProcessException(context, ex);
         }
     }
 
-    private void ProcessException(HttpContext context, Exception exception)
+    private Task ProcessException(HttpContext context, Exception exception)
     {
         _logger.LogError(exception, "Unhandled exception occured");
 
-        if (exception is DuplicateException) Results.Conflict(exception.Message).ExecuteAsync(context);
-        else Results.InternalServerError().ExecuteAsync(context);
+        if (exception is DuplicateException) return Results.Conflict(exception.Message).ExecuteAsync(context);
+        else return Results.InternalServerError().ExecuteAsync(context);
     }
 }
 
