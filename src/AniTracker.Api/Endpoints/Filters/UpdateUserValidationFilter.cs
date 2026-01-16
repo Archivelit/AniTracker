@@ -1,6 +1,6 @@
 ﻿namespace AniTracker.Api.Endpoints.Filters;
 
-public class RegisterUserValidationFilter : IEndpointFilter
+public class UpdateUserValidationFilter : IEndpointFilter
 {
     private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
 
@@ -8,7 +8,7 @@ public class RegisterUserValidationFilter : IEndpointFilter
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
     
-    public RegisterUserValidationFilter(ITitleValidator titleValidator, IEmailValidator emailValidator,
+    public UpdateUserValidationFilter(ITitleValidator titleValidator, IEmailValidator emailValidator,
         IPasswordValidator passwordValidator)
     {
         _titleValidator = titleValidator;
@@ -19,17 +19,17 @@ public class RegisterUserValidationFilter : IEndpointFilter
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto)
+        if (invocationContext.Arguments[0] is not UpdateUserDto updateUserDto)
         {
             return BadRequest;
         }
 
-        return IsValidDto(regUserDto)
+        return IsValidDto(updateUserDto)
             ? next(invocationContext)
             : BadRequest;
     }
 
-    private bool IsValidDto(RegisterUserDto dto)
+    private bool IsValidDto(UpdateUserDto dto)
     {
         if (dto?.Username is null)
             return false;

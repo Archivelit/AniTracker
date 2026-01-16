@@ -12,7 +12,8 @@ public static class UserEndpoints
         app.MapPost("/users", RegisterUser)
             .AddEndpointFilter<RegisterUserValidationFilter>();
 
-        app.MapPatch("/users/{id:guid}", UpdateUser);
+        app.MapPatch("/users/{id:guid}", UpdateUser)
+            .AddEndpointFilter<UpdateUserValidationFilter>();
     }
 
     private static async Task<IResult> GetUserById(Guid id, AniTrackerDbContext dbContext, 

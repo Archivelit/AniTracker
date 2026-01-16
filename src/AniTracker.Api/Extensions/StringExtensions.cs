@@ -11,14 +11,9 @@ public static class StringExtensions
 
         if (trimmedEmail.EndsWith("."))
             return false;
-        try 
-        {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == trimmedEmail;
-        }
-        catch 
-        {
-            return false;
-        }
+
+        var successful = System.Net.Mail.MailAddress.TryCreate(trimmedEmail, out var addr);
+        
+        return successful && addr!.Address == trimmedEmail;
     }
 }
