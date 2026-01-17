@@ -11,11 +11,11 @@ public class ExceptionMiddleware : IMiddleware
     {
         try
         {
-            await next(context).ConfigureAwait(false);
+            await next(context);
         }
         catch (Exception ex)
         {
-            await ProcessException(context, ex).ConfigureAwait(false);
+            await ProcessException(context, ex);
         }
     }
 
