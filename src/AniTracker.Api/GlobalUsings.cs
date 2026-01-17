@@ -9,6 +9,7 @@ global using AniTracker.Api.Exceptions;
 global using AniTracker.Api.Extensions;
 global using AniTracker.Api.Middlewares;
 global using AniTracker.Api.Endpoints.Filters;
+global using AniTracker.Api.Helpers.Validators;
 global using AniTracker.Api.Contracts.Validators;
 global using AniTracker.ServiceDefaults.Extensions.Hosting;
 
