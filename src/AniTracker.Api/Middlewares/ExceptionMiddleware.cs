@@ -11,11 +11,11 @@ public class ExceptionMiddleware : IMiddleware
     {
         try
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            await ProcessException(context, ex);
+            await ProcessException(context, ex).ConfigureAwait(false);
         }
     }
 
@@ -23,8 +23,12 @@ public class ExceptionMiddleware : IMiddleware
     {
         _logger.LogError(exception, "Unhandled exception occured");
 
-        if (exception is DuplicateException) return Results.Conflict(exception.Message).ExecuteAsync(context);
-        else return Results.InternalServerError().ExecuteAsync(context);
+        return exception switch
+        {
+            DuplicateException => Results.Conflict(exception.Message).ExecuteAsync(context),
+            NotFoundException => Results.NotFound(exception.Message).ExecuteAsync(context),
+            _ => Results.InternalServerError().ExecuteAsync(context)
+        };
     }
 }
 

@@ -44,11 +44,18 @@ public static class UserEndpoints
     {
         var logger = loggerFactory.CreateLogger("UserEndpoints");
         var passwordHash = hasher.Hash(registerUserDto.Password);
-        
+
+        var userExists = await dbContext.Users.AsNoTracking()
+            .AnyAsync(u => u.Email == registerUserDto.Email, ct)
+            .ConfigureAwait(false);
+
+        if (!userExists)
+            throw new DuplicateException($"Email is already taken");
+
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash);
 
         await dbContext.Users.AddAsync(user, ct).ConfigureAwait(false);
-        await dbContext.SaveChangesAsync(ct);
+        await dbContext.SaveChangesAsync(ct).ConfigureAwait(false);
         return Results.Created($"/users/{user.Id}", user);
     }
 
@@ -62,6 +69,13 @@ public static class UserEndpoints
         {
             passwordHash = hasher.Hash(updateUserDto.Password);
         }
+
+        var userExists = await dbContext.Users.AsNoTracking()
+            .AnyAsync(u => u.Id == id, ct)
+            .ConfigureAwait(false);
+
+        if (!userExists)
+            throw new NotFoundException($"User {id} doesn't exist");
         
         var updatedFields = await dbContext.Users.Where(u => u.Id == id)
             .ExecuteUpdateAsync(builder =>
