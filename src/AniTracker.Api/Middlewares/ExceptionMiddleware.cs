@@ -19,20 +19,22 @@ public class ExceptionMiddleware : IMiddleware
         }
     }
 
-    private Task ProcessException(HttpContext context, Exception exception)
+    private Task ProcessException(HttpContext context, Exception exception) => exception switch
+    {
+        DuplicateException => Results.Conflict(exception.Message).ExecuteAsync(context),
+        NotFoundException => Results.NotFound(exception.Message).ExecuteAsync(context),
+        _ => LogAndWriteError(context, exception),
+    };
+
+    private Task LogAndWriteError(HttpContext context, Exception exception) 
     {
         _logger.LogError(exception, "Unhandled exception occured");
-
-        return exception switch
-        {
-            DuplicateException => Results.Conflict(exception.Message).ExecuteAsync(context),
-            NotFoundException => Results.NotFound(exception.Message).ExecuteAsync(context),
-            _ => Results.InternalServerError().ExecuteAsync(context)
-        };
+        return Results.InternalServerError().ExecuteAsync(context);
     }
 }
 
+
 public static class ExceptionMiddlewareExtensions
 {
-    public static IApplicationBuilder UseException(this IApplicationBuilder app) => app.UseMiddleware<ExceptionMiddleware>();
+    public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app) => app.UseMiddleware<ExceptionMiddleware>();
 }

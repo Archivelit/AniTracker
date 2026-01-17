@@ -27,7 +27,7 @@ app.MapDefaultEndpoints();
 app.MapUserEndpoints();
 
 app.UseHttpsRedirection();
-app.UseException();
+app.UseExceptionHandling();
 
 if (app.Environment.IsDevelopment())
 {
