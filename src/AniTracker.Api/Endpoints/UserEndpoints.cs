@@ -50,7 +50,7 @@ public static class UserEndpoints
             .AnyAsync(u => u.Email == registerUserDto.Email, ct)
             .ConfigureAwait(false);
 
-        if (!userExists)
+        if (userExists)
             throw new DuplicateException($"Email is already taken");
 
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash);
