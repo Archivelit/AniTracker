@@ -1,4 +1,3 @@
-import { Spinner } from "@/components/ui/spinner";
 import User from "@/Models/user";
 import { api } from "@/utils/Api";
 import type { ReactNode } from "react";
@@ -13,19 +12,9 @@ export default async function Home(): Promise<ReactNode> {
 
   return (
     <div>
-      <MainContent user={user} />
+      <div>
+        <h1>Hello, {user.username}!</h1>
+      </div>
     </div>
   );
-}
-
-function MainContent({ user }: MainContentArgs): ReactNode {
-  return (
-    <div>
-      <h1>Hello, {user.username}!</h1>
-    </div>
-  );
-}
-
-interface MainContentArgs {
-  user: User;
 }
