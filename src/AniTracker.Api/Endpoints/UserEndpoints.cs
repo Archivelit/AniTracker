@@ -22,7 +22,7 @@ public static class UserEndpoints
         var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, ct);
 
         return user is not null
-            ? Results.Ok(user)
+            ? Results.Ok(new UserDto(user.Id, user.Email, user.Username))
             : Results.NotFound("User not found");
     }
 
@@ -32,7 +32,7 @@ public static class UserEndpoints
         var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, ct);
 
         return user is not null
-            ? Results.Ok(user)
+            ? Results.Ok(new UserDto(user.Id, user.Email, user.Username))
             : Results.NotFound("User not found");
     }
 
@@ -51,7 +51,7 @@ public static class UserEndpoints
 
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
-        return Results.Created($"/users/{user.Id}", user);
+        return Results.Created($"/users/{user.Id}", new UserDto(user.Id, user.Email, user.Username));
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
@@ -77,7 +77,7 @@ public static class UserEndpoints
                 builder.UpdateIfNotNull(user => user.Email, updateUserDto.Email);
                 builder.UpdateIfNotNull(user => user.PasswordHash, passwordHash);
             }, ct);
-        return Results.Ok();
+        return Results.NoContent();
     }
 
     private static void UpdateIfNotNull<TProperty>(this UpdateSettersBuilder<User> builder, 
