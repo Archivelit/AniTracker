@@ -1,3 +1,5 @@
+using AniTracker.Api.Helpers.Validators;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -7,6 +9,9 @@ builder.Services.AddDbContext<AniTrackerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("api-database"));
 });
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddTransient<IEmailValidator, EmailValidator>();
+builder.Services.AddTransient<IPasswordValidator, PasswordValidator>();
+builder.Services.AddTransient<ITitleValidator, TitleValidator>();
 builder.Services.AddScoped<ExceptionMiddleware>();
 
 builder.AddServiceDefaults();
