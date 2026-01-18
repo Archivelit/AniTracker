@@ -37,9 +37,8 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
-        ILoggerFactory loggerFactory, IPasswordHasher hasher, CancellationToken ct)
+        IPasswordHasher hasher, CancellationToken ct)
     {
-        var logger = loggerFactory.CreateLogger("UserEndpoints");
         var passwordHash = hasher.Hash(registerUserDto.Password);
 
         var userExists = await dbContext.Users.AsNoTracking().AnyAsync(u => u.Email == registerUserDto.Email, ct);
@@ -55,9 +54,8 @@ public static class UserEndpoints
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
-        AniTrackerDbContext dbContext, ILoggerFactory loggerFactory, IPasswordHasher hasher, CancellationToken ct)
+        AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
-        var logger = loggerFactory.CreateLogger("UserEndpoints");
         string? passwordHash = null;
         
         if (updateUserDto.Password is not null)
