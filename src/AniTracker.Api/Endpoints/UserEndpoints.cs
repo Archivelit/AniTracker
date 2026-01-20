@@ -77,10 +77,4 @@ public static class UserEndpoints
             }, ct);
         return Results.NoContent();
     }
-
-    private static void UpdateIfNotNull<TProperty>(this UpdateSettersBuilder<User> builder, 
-        Expression<Func<User,TProperty>> propertyExpression, TProperty newValue)
-    {
-        if (newValue is not null) builder.SetProperty(propertyExpression, newValue);
-    }
 }

@@ -77,10 +77,4 @@ public static class MediaEndpoints
 
         return Results.NoContent();
     }
-
-    private static void UpdateIfNotNull<TProperty>(this UpdateSettersBuilder<Media> builder,
-        Expression<Func<Media, TProperty>> propertyExpression, TProperty newValue)
-    {
-        if (newValue is not null) builder.SetProperty(propertyExpression, newValue);
-    }
 }
