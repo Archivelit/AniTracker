@@ -6,6 +6,8 @@ public static class IdentityEndpoints
     {
         app.MapPost("/users/login", Login)
             .AddEndpointFilter<UserCredentialsValidationFilter>();
+
+        app.MapPost("/me", Me);
     }
 
     private static async Task<IResult> Login(LoginUserDto dto, AniTrackerDbContext dbContext, 
@@ -24,5 +26,25 @@ public static class IdentityEndpoints
         var token = tokenFactory.CreateToken(user);
 
         return Results.Ok(token);
+    }
+
+    private static async Task<IResult> Me(HttpContext context, AniTrackerDbContext dbContext)
+    {
+        var token = new JwtSecurityToken(context.Request.Cookies["token"]);
+
+        var idStr = token.Claims
+            .First(c => c.Type == ClaimTypes.NameIdentifier)
+            .Value;
+        
+        if(!Guid.TryParse(idStr, out var id))
+            return Results.BadRequest("Bad token");
+
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        return user is null 
+        ? Results.BadRequest($"User {id} not found")
+        : Results.Ok(user);
     }
 }
