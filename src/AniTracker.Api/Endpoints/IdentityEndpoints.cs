@@ -4,7 +4,8 @@ public static class IdentityEndpoints
 {
     public static void MapIdentityEndpoints(this WebApplication app)
     {
-        app.MapPost("/users/login", Login);
+        app.MapPost("/users/login", Login)
+            .AddEndpointFilter<UserCredentialsValidationFilter>();
     }
 
     private static async Task<IResult> Login(LoginUserDto dto, AniTrackerDbContext dbContext, 
