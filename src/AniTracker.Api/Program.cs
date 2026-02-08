@@ -44,6 +44,7 @@ if (app.Environment.IsDevelopment())
 app.MapDefaultEndpoints();
 app.MapUserEndpoints();
 app.MapIdentityEndpoints();
+app.MapMeEndpoints();
 
 app.UseHttpsRedirection();
 app.UseExceptionHandling();
