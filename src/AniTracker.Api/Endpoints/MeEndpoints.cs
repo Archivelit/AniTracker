@@ -5,7 +5,8 @@ public static class MeEndpoints
     public static void MapMeEndpoints(this WebApplication app)
     {
         app.MapGet("/me", GetCurrentUser);
-        app.MapPatch("/me", UpdateCurrentUser);
+        app.MapPatch("/me", UpdateCurrentUser)
+            .AddEndpointFilter<UpdateUserValidationFilter>();
         app.MapDelete("/me", DeleteCurrentUser);
     }
 
