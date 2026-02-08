@@ -5,8 +5,10 @@ public static class MeEndpoints
     public static void MapMeEndpoints(this WebApplication app)
     {
         app.MapGet("/me", GetCurrentUser);
+
         app.MapPatch("/me", UpdateCurrentUser)
             .AddEndpointFilter<UpdateUserValidationFilter>();
+
         app.MapDelete("/me", DeleteCurrentUser);
     }
 
@@ -62,7 +64,7 @@ public static class MeEndpoints
 
         return updatedFields == 0
         ? Results.NotFound($"User {id} not found")
-        : Results.Ok();
+        : Results.NoContent();
     }
 
     private static bool GetUserId(HttpContext context, out Guid id)

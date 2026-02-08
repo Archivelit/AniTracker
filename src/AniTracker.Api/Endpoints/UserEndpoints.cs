@@ -63,11 +63,6 @@ public static class UserEndpoints
             passwordHash = hasher.Hash(updateUserDto.Password);
         }
 
-        var userExists = await dbContext.Users.AsNoTracking().AnyAsync(u => u.Id == id, ct);
-
-        if (!userExists)
-            throw new NotFoundException($"User {id} doesn't exist");
-        
         var updatedFields = await dbContext.Users.Where(u => u.Id == id)
             .ExecuteUpdateAsync(builder =>
             {
@@ -75,6 +70,9 @@ public static class UserEndpoints
                 builder.UpdateIfNotNull(user => user.Email, updateUserDto.Email);
                 builder.UpdateIfNotNull(user => user.PasswordHash, passwordHash);
             }, ct);
-        return Results.NoContent();
+
+        return updatedFields == 0 
+            ? Results.NotFound($"User {id} not found")
+            : Results.NoContent();
     }
 }
