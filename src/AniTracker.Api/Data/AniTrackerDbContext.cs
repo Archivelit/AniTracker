@@ -12,13 +12,13 @@ internal class AniTrackerDbContext : DbContext
     {
         var users = modelBuilder.Entity<User>();
 
-
         users.ToTable("Users");
 
         users.HasKey(u => u.Id);
         users.HasIndex(u => u.Email).IsUnique();
         users.Property(u => u.Username).HasMaxLength(50).IsRequired();
         users.Property(u => u.PasswordHash).IsRequired();
+        users.Property(u => u.Role).IsRequired();
 
         var medias = modelBuilder.Entity<Media>();
 

@@ -19,20 +19,24 @@ public static class UserEndpoints
     private static async Task<IResult> GetUserById(Guid id, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, ct);
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id, ct);
 
         return user is not null
-            ? Results.Ok(new UserDto(user.Id, user.Email, user.Username))
+            ? Results.Ok(new UserDto(user))
             : Results.NotFound("User not found");
     }
 
     private static async Task<IResult> GetUserByEmail(string email, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        var user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, ct);
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email, ct);
 
         return user is not null
-            ? Results.Ok(new UserDto(user.Id, user.Email, user.Username))
+            ? Results.Ok(new UserDto(user))
             : Results.NotFound("User not found");
     }
 
@@ -46,11 +50,12 @@ public static class UserEndpoints
         if (userExists)
             throw new DuplicateException($"Email is already taken");
 
-        var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash);
+        var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash, Role.User);
 
         await dbContext.Users.AddAsync(user, ct);
         await dbContext.SaveChangesAsync(ct);
-        return Results.Created($"/users/{user.Id}", new UserDto(user.Id, user.Email, user.Username));
+
+        return Results.Created($"/users/{user.Id}", new UserDto(user));
     }
 
     private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
@@ -59,9 +64,8 @@ public static class UserEndpoints
         string? passwordHash = null;
         
         if (updateUserDto.Password is not null)
-        {
             passwordHash = hasher.Hash(updateUserDto.Password);
-        }
+        
 
         var updatedFields = await dbContext.Users.Where(u => u.Id == id)
             .ExecuteUpdateAsync(builder =>

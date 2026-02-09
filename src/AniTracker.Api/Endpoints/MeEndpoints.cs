@@ -23,8 +23,8 @@ public static class MeEndpoints
             .FirstOrDefaultAsync(u => u.Id == id, ct);
 
         return user is null
-        ? Results.BadRequest($"User {id} not found")
-        : Results.Ok(user);
+            ? Results.BadRequest($"User {id} not found")
+            : Results.Ok(new UserDto(user));
     }
 
     private static async ValueTask<IResult> DeleteCurrentUser(HttpContext context, AniTrackerDbContext dbContext,
@@ -38,8 +38,8 @@ public static class MeEndpoints
             .ExecuteDeleteAsync(ct);
 
         return deletedUsers == 0
-        ? Results.BadRequest($"User {id} not found")
-        : Results.Ok();
+            ? Results.BadRequest($"User {id} not found")
+            : Results.Ok();
     }
 
     private static async ValueTask<IResult> UpdateCurrentUser(UpdateUserDto updateUserDto, HttpContext context, 
@@ -63,8 +63,8 @@ public static class MeEndpoints
             }, ct);
 
         return updatedFields == 0
-        ? Results.NotFound($"User {id} not found")
-        : Results.NoContent();
+            ? Results.NotFound($"User {id} not found")
+            : Results.NoContent();
     }
 
     private static bool GetUserId(HttpContext context, out Guid id)
