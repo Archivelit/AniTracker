@@ -11,6 +11,8 @@ public static class UserMediaEndpoints
         app.MapPost("/me/medias/{mediaId:guid}", AddMedia);
 
         app.MapPatch("/me/medias/{mediaId:guid}", UpdateMedia);
+
+        app.MapDelete("/me/medias/{mediaId:guid}", DeleteMedia);
     }
 
     private static async ValueTask<IResult> UpdateMedia(Guid mediaId, UpdateUserMediaDto updateUserMediaDto, 
@@ -131,6 +133,22 @@ public static class UserMediaEndpoints
         await dbContext.SaveChangesAsync(ct);
 
         return Results.Created($"/me/medias/{mediaId}", userMedia);
+    }
+
+
+    private static async Task<IResult> DeleteMedia(Guid mediaId, HttpContext context, 
+        AniTrackerDbContext dbContext, CancellationToken ct)
+    {
+        if (!GetUserId(context, out var id))
+            return Results.BadRequest("Bad token");
+
+        var deleted = await dbContext.UsersMedia
+            .Where(um => um.MediaId == mediaId && um.UserId == id)
+            .ExecuteDeleteAsync(ct);
+        
+        return deleted == 0 
+            ? Results.NotFound($"Media {mediaId} for user {id} not found")
+            : Results.Ok();
     }
 
     private static bool GetUserId(HttpContext context, out Guid id)

@@ -45,6 +45,7 @@ app.MapDefaultEndpoints();
 app.MapUserEndpoints();
 app.MapIdentityEndpoints();
 app.MapMeEndpoints();
+app.MapUserMediaEndpoints();
 
 app.UseHttpsRedirection();
 app.UseExceptionHandling();
