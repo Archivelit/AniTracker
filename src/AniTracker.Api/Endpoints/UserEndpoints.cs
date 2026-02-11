@@ -4,13 +4,16 @@ public static class UserEndpoints
 {
     public static void MapUserEndpoints(this WebApplication app)
     {
-        app.MapGet("/users/{id:guid}", GetUserById);
+        app.MapGet("/users/{id:guid}", GetUserById)
+            .AllowAnonymous();
 
         app.MapGet("/users", GetUserByEmail)
-           .AddEndpointFilter<EmailValidationFilter>();
+           .AddEndpointFilter<EmailValidationFilter>()
+           .AllowAnonymous();
 
         app.MapPost("/users", RegisterUser)
-            .AddEndpointFilter<RegisterUserValidationFilter>();
+            .AddEndpointFilter<RegisterUserValidationFilter>()
+            .AllowAnonymous();
 
         app.MapPatch("/users/{id:guid}", UpdateUser)
             .AddEndpointFilter<UpdateUserValidationFilter>();
