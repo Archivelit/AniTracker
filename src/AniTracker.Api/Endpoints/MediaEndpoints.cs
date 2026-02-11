@@ -4,9 +4,11 @@ public static class MediaEndpoints
 {
     public static void MapMediaEndpoints(this WebApplication app)
     {
-        app.MapGet("/medias/{id:guid}", GetById);
+        app.MapGet("/medias/{id:guid}", GetById)
+            .AllowAnonymous();
 
-        app.MapGet("/medias", GetMedias);
+        app.MapGet("/medias", GetMedias)
+            .AllowAnonymous();
 
         app.MapPost("/medias", Register)
             .AddEndpointFilter<RegisterMediaValidationFilter>();

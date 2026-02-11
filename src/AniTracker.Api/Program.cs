@@ -26,11 +26,10 @@ builder.Services
             ValidateIssuerSigningKey = true,
 
             IssuerSigningKey = new SymmetricSecurityKey(TokenSecretProvider.Secret),
-
+            
             ClockSkew = TimeSpan.Zero
         };
     });
-
 
 builder.AddServiceDefaults();
 
@@ -49,6 +48,8 @@ app.MapUserMediaEndpoints();
 
 app.UseHttpsRedirection();
 app.UseExceptionHandling();
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
