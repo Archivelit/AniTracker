@@ -2,7 +2,7 @@ namespace AniTracker.Api.Endpoints.Filters;
 
 public class UpdateUserMediaValidationFilter : IEndpointFilter
 {
-    
+
     public UpdateUserValidationFilter(ITitleValidator titleValidator, IEmailValidator emailValidator,
         IPasswordValidator passwordValidator)
     {
@@ -10,7 +10,7 @@ public class UpdateUserMediaValidationFilter : IEndpointFilter
         _emailValidator = emailValidator;
         _passwordValidator = passwordValidator;
     }
-    
+
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {

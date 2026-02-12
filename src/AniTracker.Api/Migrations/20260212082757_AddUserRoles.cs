@@ -5,7 +5,7 @@
 namespace AniTracker.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class Adduserroles : Migration
+    public partial class AddUserRoles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

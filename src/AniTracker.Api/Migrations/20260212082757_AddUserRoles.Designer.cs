@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AniTracker.Api.Migrations
 {
     [DbContext(typeof(AniTrackerDbContext))]
-    [Migration("20260212082540_Add user roles")]
-    partial class Adduserroles
+    [Migration("20260212082757_AddUserRoles")]
+    partial class AddUserRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
