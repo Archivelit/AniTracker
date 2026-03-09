@@ -11,10 +11,10 @@ export default function Login() {
             email: string,
             password: string,
         ): Promise<string> =>
-            await api.post("/users/login", {
+            (await api.post("/users/login", {
                 email: email,
                 password: password,
-            });
+            })).data;
 
         const token: string = await getToken(data.email, data.password);
         const cookieStore = await cookies();
