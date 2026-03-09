@@ -43,7 +43,7 @@ public static class UserEndpoints
             : Results.NotFound("User not found");
     }
 
-    private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
+    private static async Task<IResult> RegisterUser([FromBody] RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
         IPasswordHasher hasher, CancellationToken ct)
     {
         var passwordHash = hasher.Hash(registerUserDto.Password);
@@ -61,7 +61,7 @@ public static class UserEndpoints
         return Results.Created($"/users/{user.Id}", new UserDto(user));
     }
 
-    private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
+    private static async Task<IResult> UpdateUser([FromBody] UpdateUserDto updateUserDto, Guid id, 
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
         string? passwordHash = null;

@@ -6,7 +6,7 @@ public static class IdentityEndpoints
         .AddEndpointFilter<UserCredentialsValidationFilter>()
         .AllowAnonymous();
 
-    private static async Task<IResult> Login(LoginUserDto dto, AniTrackerDbContext dbContext, 
+    private static async Task<IResult> Login([FromBody] LoginUserDto dto, AniTrackerDbContext dbContext, 
         IPasswordHasher hasher, ITokenFactory tokenFactory)
     {
         var user = await dbContext.Users

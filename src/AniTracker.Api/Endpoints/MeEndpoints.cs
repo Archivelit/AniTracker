@@ -42,7 +42,7 @@ public static class MeEndpoints
             : Results.Ok();
     }
 
-    private static async ValueTask<IResult> UpdateCurrentUser(UpdateUserDto updateUserDto, HttpContext context, 
+    private static async ValueTask<IResult> UpdateCurrentUser([FromBody] UpdateUserDto updateUserDto, HttpContext context, 
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
         if (!GetUserId(context, out var id))
