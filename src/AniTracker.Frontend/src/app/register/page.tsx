@@ -1,7 +1,5 @@
 import { ReactNode } from "react";
 
-export default function Register() : ReactNode {
-    return (
-        <></>
-    )
+export default function Register(): ReactNode {
+    return <></>;
 }

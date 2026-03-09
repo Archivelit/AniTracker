@@ -7,5 +7,5 @@ export default function Header(): ReactNode {
                 <></>
             </div>
         </header>
-    )
+    );
 }
