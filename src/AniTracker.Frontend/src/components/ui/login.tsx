@@ -1,7 +1,6 @@
 import { Link } from "lucide-react";
-import { ReactNode } from "react";
 
-export default function Login(): ReactNode {
+export default function Login() {
     return (
         <div>
             <Link href="/login">Log in</Link>

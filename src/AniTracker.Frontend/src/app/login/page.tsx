@@ -1,10 +1,9 @@
 import LoginForm from "@/components/forms/login";
 import { api } from "@/utils/Api";
 import { cookies } from "next/headers";
-import type { ReactNode } from "react";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
 
-export default function Login(): ReactNode {
+export default function Login() {
     const login = async (data: LoginFormData): Promise<void> => {
         "use server";
 
@@ -23,7 +22,7 @@ export default function Login(): ReactNode {
     };
 
     return (
-        <main>
+        <main className="flex min-h-screen justify-center pb-32">
             <LoginForm loginHandler={login} />
         </main>
     );

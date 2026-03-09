@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
-export default function Register(): ReactNode {
+export default function Register() {
     return <></>;
 }

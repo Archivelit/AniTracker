@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
-
-export default async function Home(): Promise<ReactNode> {
+export default async function Home() {
     return (
         <div>
             <h1>AniTracker</h1>
