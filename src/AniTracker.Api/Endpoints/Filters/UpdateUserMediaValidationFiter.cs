@@ -1,41 +1,26 @@
 namespace AniTracker.Api.Endpoints.Filters;
 
+// TODO: Implement user media validation
 public class UpdateUserMediaValidationFilter : IEndpointFilter
 {
+    private const string InvalidModelMessage = "Invalid model or data";
 
-    public UpdateUserValidationFilter(ITitleValidator titleValidator, IEmailValidator emailValidator,
-        IPasswordValidator passwordValidator)
-    {
-        _titleValidator = titleValidator;
-        _emailValidator = emailValidator;
-        _passwordValidator = passwordValidator;
-    }
+    public UpdateUserMediaValidationFilter() { }
 
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (invocationContext.Arguments[0] is not UpdateUserDto updateUserDto)
+        if (invocationContext.Arguments[0] is not UpdateUserMediaDto updateUserMediaDto)
         {
-            return ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
+            return BadRequest(InvalidModelMessage);
         }
 
-        return IsValidDto(updateUserDto)
+        return IsValidDto(updateUserMediaDto)
             ? next(invocationContext)
-            : BadRequest;
+            : BadRequest(InvalidModelMessage);
     }
 
-    private bool IsValidDto(UpdateUserDto dto)
-    {
-        if (dto?.Username is null)
-            return false;
+    private bool IsValidDto(UpdateUserMediaDto dto) => true;
 
-        dto = dto with
-        {
-            Username = dto.Username.Trim()
-        };
-
-        return _titleValidator.IsValid(dto.Username)
-               && _emailValidator.IsValid(dto.Email)
-               && _passwordValidator.IsValid(dto.Password);
-    }
+    private static ValueTask<object?> BadRequest(string message) => ValueTask.FromResult<object?>(Results.BadRequest(message));
 }

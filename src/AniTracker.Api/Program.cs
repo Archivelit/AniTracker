@@ -31,6 +31,8 @@ builder.Services
         };
     });
 
+builder.Services.AddAuthorization();
+
 builder.AddServiceDefaults();
 
 var app = builder.Build();
