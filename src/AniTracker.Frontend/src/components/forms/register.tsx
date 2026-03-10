@@ -1,21 +1,19 @@
 "use client";
 
-import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
-import type { LoginFormData } from "@/types/Forms/LoginFormData";
+import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 type Props = {
-    loginHandler: (data: LoginFormData) => Promise<void>;
+    registerHandler: (data: RegisterFormData) => Promise<void>;
 };
 
-export default function LoginForm({ loginHandler }: Props) {
-    const { register, handleSubmit } = useForm<LoginFormData>();
+export default function RegisterForm({ registerHandler }: Props) {
+    const { register, handleSubmit } = useForm<RegisterFormData>();
 
-    const onSubmit = async (data: LoginFormData) => {
-        await loginHandler(data);
-        redirect("/");
+    const onSubmit = async (data: RegisterFormData) => {
+        await registerHandler(data);
     };
 
     return (
@@ -24,12 +22,20 @@ export default function LoginForm({ loginHandler }: Props) {
                 onSubmit={handleSubmit(onSubmit)}
                 className="border-2 border-foreground block items-center align p-4 w-80 h-100 rounded-xl"
             >
+                <div className="flex justify-center m-4 rounded-sm h-fit">
+                    <Input
+                        type="text"
+                        placeholder="Enter your name"
+                        {...register("username")}
+                        className="px-2 py-5 w-full text-lg"
+                    />
+                </div>
                 <div className="flex m-4 rounded-sm">
                     <Input
                         type="text"
                         {...register("email")}
                         placeholder="Enter your email"
-                        className="border-2 border-foreground px-2 py-5 w-full text-lg"
+                        className="px-2 py-5 w-full text-lg"
                     />
                 </div>
                 <div className="flex justify-center m-4 rounded-sm h-fit">
@@ -37,12 +43,19 @@ export default function LoginForm({ loginHandler }: Props) {
                         type="password"
                         {...register("password")}
                         placeholder="Enter your password"
-                        className="border-2 border-foreground px-2 py-5 w-full text-lg"
+                        className="px-2 py-5 w-full text-lg"
+                    />
+                </div>
+                <div className="flex justify-center m-4 rounded-sm h-fit">
+                    <Input
+                        type="password"
+                        placeholder="Repeat password"
+                        className="px-2 py-5 w-full text-lg"
                     />
                 </div>
                 <div className="flex justify-center m-4">
                     <Button className="w-full py-2 transition-colors cursor-pointer p-5 px-8 text-lg rounded-sm">
-                        Log in
+                        Register account
                     </Button>
                 </div>
             </form>
