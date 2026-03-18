@@ -9,7 +9,7 @@ public static class StringExtensions
         
         var trimmedEmail = email.Trim();
 
-        if (trimmedEmail.EndsWith("."))
+        if (trimmedEmail.EndsWith('.'))
             return false;
 
         var successful = System.Net.Mail.MailAddress.TryCreate(trimmedEmail, out var addr);

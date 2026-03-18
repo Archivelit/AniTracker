@@ -2,8 +2,6 @@
 
 public class RegisterUserValidationFilter : IEndpointFilter
 {
-    private static ValueTask<object?> UnprocessableEntity(string msg) => ValueTask.FromResult<object?>(Results.UnprocessableEntity(msg));
-
     private readonly ITitleValidator _titleValidator;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
@@ -19,11 +17,12 @@ public class RegisterUserValidationFilter : IEndpointFilter
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto) return UnprocessableEntity("Ivalid data model");
+        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto) 
+            return ValueTask.FailValidation("Ivalid data model");
 
-        if (!IsValidUsername(regUserDto)) return UnprocessableEntity("Invalid username");
-        if (!_emailValidator.IsValid(regUserDto.Email)) return UnprocessableEntity("Invalid email");
-        if (!_passwordValidator.IsValid(regUserDto.Password)) return UnprocessableEntity("Invalid password");
+        if (!IsValidUsername(regUserDto)) return ValueTask.FailValidation("Invalid username");
+        if (!_emailValidator.IsValid(regUserDto.Email)) return ValueTask.FailValidation("Invalid email");
+        if (!_passwordValidator.IsValid(regUserDto.Password)) return ValueTask.FailValidation("Invalid password");
 
         return next(invocationContext);
     }
