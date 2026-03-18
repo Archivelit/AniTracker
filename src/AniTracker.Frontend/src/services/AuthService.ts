@@ -5,10 +5,9 @@ import { api } from "@/utils/Api";
 
 export async function login(data: LoginData): Promise<LoginResponse> {
     const response = await api.post("/auth/login", data);
-
     return response.data;
 }
 
-export async function registerUser(data: RegisterData): Promise<void> {
-    await api.post("/users", data);
+export function registerUser(data: RegisterData): Promise<void> {
+    return api.post("/users", data);
 }

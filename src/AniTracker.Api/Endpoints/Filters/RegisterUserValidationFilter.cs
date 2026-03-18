@@ -2,7 +2,7 @@
 
 public class RegisterUserValidationFilter : IEndpointFilter
 {
-    private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
+    private static ValueTask<object?> UnprocessableEntity(string msg) => ValueTask.FromResult<object?>(Results.UnprocessableEntity(msg));
 
     private readonly ITitleValidator _titleValidator;
     private readonly IEmailValidator _emailValidator;
@@ -19,17 +19,16 @@ public class RegisterUserValidationFilter : IEndpointFilter
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto)
-        {
-            return BadRequest;
-        }
+        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto) return UnprocessableEntity("Ivalid data model");
 
-        return IsValidDto(regUserDto)
-            ? next(invocationContext)
-            : BadRequest;
+        if (!IsValidUsername(regUserDto)) return UnprocessableEntity("Invalid username");
+        if (!_emailValidator.IsValid(regUserDto.Email)) return UnprocessableEntity("Invalid email");
+        if (!_passwordValidator.IsValid(regUserDto.Password)) return UnprocessableEntity("Invalid password");
+
+        return next(invocationContext);
     }
 
-    private bool IsValidDto(RegisterUserDto dto)
+    private bool IsValidUsername(RegisterUserDto dto)
     {
         if (dto?.Username is null)
             return false;
@@ -39,8 +38,6 @@ public class RegisterUserValidationFilter : IEndpointFilter
             Username = dto.Username.Trim()
         };
 
-        return _titleValidator.IsValid(dto.Username)
-               && _emailValidator.IsValid(dto.Email)
-               && _passwordValidator.IsValid(dto.Password);
+        return _titleValidator.IsValid(dto.Username);
     }
 }

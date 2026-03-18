@@ -2,7 +2,7 @@
 
 public static class IdentityEndpoints
 {
-    public static void MapIdentityEndpoints(this WebApplication app) => app.MapPost("/users/login", Login)
+    public static void MapIdentityEndpoints(this WebApplication app) => app.MapPost("/auth/login", Login)
         .AddEndpointFilter<UserCredentialsValidationFilter>()
         .AllowAnonymous();
 

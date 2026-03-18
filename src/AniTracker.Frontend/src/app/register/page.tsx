@@ -8,17 +8,14 @@ import type RegisterFormData from "@/types/Interfaces/RegisterData";
 export default async function Register() {
     async function registerHandler(data: RegisterFormData): Promise<void> {
         "use server";
-        try {
-            await registerUser(data);
-    
-            const loginResponse = await login(data);
-    
-            const cookieStore = await cookies();
-            cookieStore.set("token", loginResponse.token, { maxAge: 60 * 15 });
-            redirect("/");
-        } catch {
-            return;
-        }
+
+        await registerUser(data);
+
+        const loginResponse = await login(data);
+
+        const cookieStore = await cookies();
+        cookieStore.set("token", loginResponse.token, { maxAge: 60 * 15 });
+        redirect("/");
     }
 
     return (

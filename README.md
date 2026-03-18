@@ -40,7 +40,7 @@ dotnet run -c Debug
 
 #### **Login**
 
-`POST /users/login`
+`POST /auth/login`
 
 Authenticate the user and return a JWT token.
 
@@ -203,7 +203,7 @@ Creates a new media entry.
 | 400 Bad Request | Invalid token or user not found |
 | 404 Not Found   | Media Get Media List            |
 
-## **Example Response**
+#### **Example Response**
 
 ```json
 {

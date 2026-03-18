@@ -51,7 +51,7 @@ public static class UserEndpoints
         var userExists = await dbContext.Users.AsNoTracking().AnyAsync(u => u.Email == registerUserDto.Email, ct);
 
         if (userExists)
-            throw new DuplicateException($"Email is already taken");
+            return Results.Conflict($"Email is already taken");
 
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash, Role.User);
 
