@@ -6,41 +6,19 @@ import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { loginValidationSchema } from "@/utils/ValidationSchemes";
-import { ZodError } from "zod";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
     loginHandler: (data: LoginFormData) => Promise<void>;
 };
 
 export default function LoginForm({ loginHandler }: Props) {
-    const { register, handleSubmit, formState, setError } = useForm<LoginFormData>();
-
-    const isPasswordError = (err: ZodError) =>
-        err.issues.some((issue) => issue.path[0] === "password");
-
-    const isEmailError = (err: ZodError) =>
-        err.issues.some((issue) => issue.path[0] === "email");
-
-    const processValidationError = (err: ZodError) => {
-        if (isEmailError(err)) {
-            setError("email", { message: "Invalid email address" });
-        } else if (isPasswordError(err)) {
-            const message = err.issues.find(i => i.path[0] === "password")?.message;
-            setError("password", { message: message });
-        }
-    }
+    const { register, handleSubmit, formState } = useForm<LoginFormData>({
+        resolver: zodResolver(loginValidationSchema)
+    });
 
     const onSubmit = async (data: LoginFormData) => {
-        try {
-            loginValidationSchema.parse(data);
-        } catch (err) {
-            if (err instanceof ZodError) {
-                processValidationError(err);
-            }
-            return;
-        }
-
         await loginHandler(data);
         redirect("/");
     };
@@ -49,7 +27,7 @@ export default function LoginForm({ loginHandler }: Props) {
         <div className="flex justify-center items-center">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="border-1 border-foreground block items-center align p-4 w-80 h-100 rounded-xl"
+                className="border border-foreground block items-center align p-4 w-80 h-100 rounded-xl"
             >
                 {formState.errors.email && 
                     <div className="flex justify-left mx-4 my-2 h-fit">

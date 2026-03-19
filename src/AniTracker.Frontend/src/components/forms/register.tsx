@@ -5,52 +5,20 @@ import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { registrationValidationSchema } from "@/utils/ValidationSchemes";
-import { ZodError } from "zod";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
     registerHandler: (data: RegisterFormData) => Promise<void>;
 };
 
 export default function RegisterForm({ registerHandler }: Props) {
-    const { register, handleSubmit, formState, setError } = useForm<RegisterFormData>();
-
-    const isPasswordError = (err: ZodError) =>
-        err.issues.some((issue) => issue.path[0] === "password");
-
-    const isEmailError = (err: ZodError) =>
-        err.issues.some((issue) => issue.path[0] === "email");
-
-    const isUsernameError = (err: ZodError) =>
-        err.issues.some((issue) => issue.path[0] === "username");
-    
-    const processValidationError = (err: ZodError) => {
-        if (isEmailError(err)) {
-            setError("email", { message: "Invalid email address" });
-            return;
-        } else if (isPasswordError(err)) {
-            const message = err.issues.find(i => i.path[0] === "password")?.message;
-            setError("password", { message: message });
-            return;
-        } else if (isUsernameError(err)) {
-            const message = err.issues.find(i => i.path[0] === "username")?.message;
-            setError("username", { message: message });
-        } else {
-            setError("confirmPassword", { message: "Passwords don't match" });
-        }
-    }
+    const { register, handleSubmit, formState } = useForm<RegisterFormData>({
+        resolver: zodResolver(registrationValidationSchema)
+    });
     
     const onSubmit = async (data: RegisterFormData) => {
-        try {
-            registrationValidationSchema.parse(data);
-        } catch (err) {
-            if (err instanceof ZodError) {
-                processValidationError(err);
-            }
-            return;
-        }
-
         await registerHandler(data);
         redirect("/");
     };
@@ -59,7 +27,7 @@ export default function RegisterForm({ registerHandler }: Props) {
         <div className="flex justify-center items-center">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="border-1 border-foreground block items-center align p-4 w-80 h-100 rounded-xl"
+                className="border border-foreground block items-center align p-4 w-80 h-100 rounded-xl"
             >
                     {formState.errors.username && 
                         <div className="flex justify-left mx-4 my-2 h-fit">
