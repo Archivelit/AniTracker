@@ -2,8 +2,6 @@
 
 public class RegisterUserValidationFilter : IEndpointFilter
 {
-    private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
-
     private readonly ITitleValidator _titleValidator;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
@@ -19,17 +17,17 @@ public class RegisterUserValidationFilter : IEndpointFilter
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext invocationContext,
         EndpointFilterDelegate next)
     {
-        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto)
-        {
-            return BadRequest;
-        }
+        if (invocationContext.Arguments[0] is not RegisterUserDto regUserDto) 
+            return ValueTask.FailValidation("Ivalid data model");
 
-        return IsValidDto(regUserDto)
-            ? next(invocationContext)
-            : BadRequest;
+        if (!IsValidUsername(regUserDto)) return ValueTask.FailValidation("Invalid username");
+        if (!_emailValidator.IsValid(regUserDto.Email)) return ValueTask.FailValidation("Invalid email");
+        if (!_passwordValidator.IsValid(regUserDto.Password)) return ValueTask.FailValidation("Invalid password");
+
+        return next(invocationContext);
     }
 
-    private bool IsValidDto(RegisterUserDto dto)
+    private bool IsValidUsername(RegisterUserDto dto)
     {
         if (dto?.Username is null)
             return false;
@@ -39,8 +37,6 @@ public class RegisterUserValidationFilter : IEndpointFilter
             Username = dto.Username.Trim()
         };
 
-        return _titleValidator.IsValid(dto.Username)
-               && _emailValidator.IsValid(dto.Email)
-               && _passwordValidator.IsValid(dto.Password);
+        return _titleValidator.IsValid(dto.Username);
     }
 }
