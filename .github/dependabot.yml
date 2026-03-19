@@ -5,22 +5,18 @@ updates:
     schedule:
       interval: "weekly"
     labels:
-    - "enhancement"
     - "backend-related"
 
-  - package-ecosystem: "npm"
-    directory: "/src/AniTrack.Frontend/src"
+  - package-ecosystem: "pnpm"
+    directory: "/src/AniTracker.Frontend/src"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
     labels:
-      - "enhancement"
       - "frontend-related"
 
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: "/.github"
     schedule:
       interval: "weekly"
     labels:
-      - "enhancement"
       - "ci-related"
