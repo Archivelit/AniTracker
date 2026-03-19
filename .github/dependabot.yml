@@ -7,7 +7,7 @@ updates:
     labels:
     - "backend-related"
 
-  - package-ecosystem: "pnpm"
+  - package-ecosystem: "npm"
     directory: "/src/AniTracker.Frontend/src"
     schedule:
       interval: "weekly"
@@ -15,7 +15,7 @@ updates:
       - "frontend-related"
 
   - package-ecosystem: "github-actions"
-    directory: "/.github"
+    directory: "/.github/workflows"
     schedule:
       interval: "weekly"
     labels:
