@@ -10,6 +10,6 @@ public class PasswordValidator : IPasswordValidator
         return password.Any(char.IsLower) 
                && password.Any(char.IsDigit) 
                && password.Any(char.IsUpper) 
-               && password.Any(char.IsSymbol);
+               && password.Any(c => char.IsSymbol(c) || char.IsPunctuation(c));
     }
 }

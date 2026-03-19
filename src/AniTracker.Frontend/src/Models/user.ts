@@ -4,8 +4,8 @@ export default class User {
     readonly email: string;
 
     constructor(id: string, username: string, email: string) {
-        this.id = id
-        this.username = username
-        this.email = email 
+        this.id = id;
+        this.username = username;
+        this.email = email;
     }
 }

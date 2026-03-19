@@ -14,21 +14,16 @@ public class UserCredentialsValidationFilter : IEndpointFilter
     
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        if (context.Arguments[0] is not LoginUserDto)
+        if (context.Arguments[0] is not LoginUserDto dto)
         {
-            return ValueTask.FromResult<object?>(
-                Results.BadRequest("Invalid model or data.")
-                );
+            return ValueTask.FailValidation("Invalid model received");
         }
 
-        var dto = (LoginUserDto)context.Arguments[0]!;
-        if (!_passwordValidator.IsValid(dto.Password)
-        || !_emailValidator.IsValid(dto.Email))
-        {
-            return ValueTask.FromResult<object?>(
-                Results.BadRequest("Invalid model or data.")
-                ); 
-        }
+        if (!_passwordValidator.IsValid(dto.Password))
+            return ValueTask.FailValidation("Invalid password");
+
+        if (!_emailValidator.IsValid(dto.Email))
+            return ValueTask.FailValidation("Invalid email");
 
         return next(context);
     }

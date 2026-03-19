@@ -2,8 +2,6 @@
 
 public class UpdateUserValidationFilter : IEndpointFilter
 {
-    private static readonly ValueTask<object?> BadRequest = ValueTask.FromResult<object?>(Results.BadRequest("Invalid model or data"));
-
     private readonly ITitleValidator _titleValidator;
     private readonly IEmailValidator _emailValidator;
     private readonly IPasswordValidator _passwordValidator;
@@ -20,27 +18,24 @@ public class UpdateUserValidationFilter : IEndpointFilter
         EndpointFilterDelegate next)
     {
         if (invocationContext.Arguments[0] is not UpdateUserDto updateUserDto)
+            return ValueTask.FailValidation("Invalid model received");
+
+        if (updateUserDto?.Username is null) return ValueTask.FailValidation("Username cannot be empty");
+
+        updateUserDto = updateUserDto with
         {
-            return BadRequest;
-        }
-
-        return IsValidDto(updateUserDto)
-            ? next(invocationContext)
-            : BadRequest;
-    }
-
-    private bool IsValidDto(UpdateUserDto dto)
-    {
-        if (dto?.Username is null)
-            return false;
-
-        dto = dto with
-        {
-            Username = dto.Username.Trim()
+            Username = updateUserDto.Username.Trim()
         };
 
-        return _titleValidator.IsValid(dto.Username)
-               && _emailValidator.IsValid(dto.Email)
-               && _passwordValidator.IsValid(dto.Password);
+        if (!_titleValidator.IsValid(updateUserDto.Username)) 
+            return ValueTask.FailValidation("Invalid username");
+
+        if (updateUserDto.Email is null || !_emailValidator.IsValid(updateUserDto.Email)) 
+            return ValueTask.FailValidation("Invalid email");
+
+        if (updateUserDto.Password is null || !_passwordValidator.IsValid(updateUserDto.Password)) 
+            return ValueTask.FailValidation("Invalid password");
+
+        return next(invocationContext);
     }
 }

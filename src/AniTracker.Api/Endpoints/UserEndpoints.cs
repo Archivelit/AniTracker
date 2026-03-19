@@ -43,7 +43,7 @@ public static class UserEndpoints
             : Results.NotFound("User not found");
     }
 
-    private static async Task<IResult> RegisterUser(RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
+    private static async Task<IResult> RegisterUser([FromBody] RegisterUserDto registerUserDto, AniTrackerDbContext dbContext, 
         IPasswordHasher hasher, CancellationToken ct)
     {
         var passwordHash = hasher.Hash(registerUserDto.Password);
@@ -51,7 +51,7 @@ public static class UserEndpoints
         var userExists = await dbContext.Users.AsNoTracking().AnyAsync(u => u.Email == registerUserDto.Email, ct);
 
         if (userExists)
-            throw new DuplicateException($"Email is already taken");
+            return Results.Conflict($"Email is already taken");
 
         var user = new User(registerUserDto.Username, registerUserDto.Email, passwordHash, Role.User);
 
@@ -61,7 +61,7 @@ public static class UserEndpoints
         return Results.Created($"/users/{user.Id}", new UserDto(user));
     }
 
-    private static async Task<IResult> UpdateUser(UpdateUserDto updateUserDto, Guid id, 
+    private static async Task<IResult> UpdateUser([FromBody] UpdateUserDto updateUserDto, Guid id, 
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
         string? passwordHash = null;

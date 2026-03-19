@@ -2,11 +2,11 @@
 
 public static class IdentityEndpoints
 {
-    public static void MapIdentityEndpoints(this WebApplication app) => app.MapPost("/users/login", Login)
+    public static void MapIdentityEndpoints(this WebApplication app) => app.MapPost("/auth/login", Login)
         .AddEndpointFilter<UserCredentialsValidationFilter>()
         .AllowAnonymous();
 
-    private static async Task<IResult> Login(LoginUserDto dto, AniTrackerDbContext dbContext, 
+    private static async Task<IResult> Login([FromBody] LoginUserDto dto, AniTrackerDbContext dbContext, 
         IPasswordHasher hasher, ITokenFactory tokenFactory)
     {
         var user = await dbContext.Users
