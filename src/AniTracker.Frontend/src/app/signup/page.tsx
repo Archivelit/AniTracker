@@ -5,8 +5,14 @@ import { login, registerUser } from "@/services/AuthService";
 import type RegisterFormData from "@/types/Interfaces/RegisterData";
 import type { FetchResult } from "@/models/fetchResult";
 import type RegisterData from "@/types/Interfaces/RegisterData";
+import type { Metadata } from "next";
 
-export default async function Register() {    
+export const metadata: Metadata = {
+    title: "Sign Up",
+
+};
+
+export default async function Signup() {
     async function registerHandler(data: RegisterFormData): Promise<FetchResult<RegisterData>> {
         "use server";
 
@@ -24,7 +30,7 @@ export default async function Register() {
     }
 
     return (
-        <main className="min-h-screen justify-center items-center flex">
+        <main className="justify-center items-center flex min-h-screen">
             <RegisterForm registerHandler={registerHandler} />
         </main>
     );
