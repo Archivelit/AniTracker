@@ -10,7 +10,7 @@ export const passwordSchema = z.string()
 
 export const loginValidationSchema = z.object({
     email: z.email("Invalid email address"),
-    password: passwordSchema
+    password: z.string().nonempty("Password cannot be empty")
 });
 
 export const registrationValidationSchema = z.object({

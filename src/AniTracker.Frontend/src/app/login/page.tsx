@@ -4,14 +4,20 @@ import { cookies } from "next/headers";
 import LoginForm from "@/components/forms/login";
 import { login } from "@/services/AuthService";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
+import type { FetchResult } from "@/models/fetchResult";
+import type LoginResponse from "@/types/Interfaces/LoginResponse";
 
 export default async function Login() {
-    const loginHandler = async (data: LoginFormData): Promise<void> => {
+    const loginHandler = async (data: LoginFormData): Promise<FetchResult<LoginResponse>> => {
         "use server";
-        const token: string = (await login(data)).token;
+        const response: FetchResult<LoginResponse> = await login(data);
+        
+        if (response.success) {
+            const cookieStore = await cookies();
+            cookieStore.set("token", response.result.token, { maxAge: 60 * 15 });
+        }
 
-        const cookieStore = await cookies();
-        cookieStore.set("token", token, { maxAge: 60 * 15 });
+        return response;
     };
 
     return (
