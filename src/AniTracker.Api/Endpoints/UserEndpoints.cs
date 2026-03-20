@@ -79,7 +79,7 @@ public static class UserEndpoints
             }, ct);
 
         return updatedFields == 0 
-            ? Results.NotFound($"User {id} not found")
+            ? Results.NotFound($"User not found")
             : Results.NoContent();
     }
 }

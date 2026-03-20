@@ -14,10 +14,10 @@ public static class IdentityEndpoints
             .SingleOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user is null)
-            throw new NotFoundException($"User with {dto.Email} email not found");
+            return Results.NotFound($"User not found");
 
         if (!hasher.Verify(dto.Password, user.PasswordHash))
-            return Results.BadRequest("Worng password");
+            return Results.BadRequest("Invalid password");
 
         var token = tokenFactory.CreateToken(user);
 

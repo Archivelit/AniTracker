@@ -63,7 +63,7 @@ public static class MediaEndpoints
         var exists = await dbContext.Medias.AsNoTracking().AnyAsync(m => m.Id == id, ct);
 
         if (!exists)
-            throw new NotFoundException($"Media {id} doesn't exist");
+            Results.NotFound($"Media does not exist");
 
         await dbContext.Medias.Where(m => m.Id == id)
             .ExecuteUpdateAsync(builder =>

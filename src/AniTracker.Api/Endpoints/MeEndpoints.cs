@@ -15,22 +15,22 @@ public static class MeEndpoints
     private static async ValueTask<IResult> GetCurrentUser(HttpContext context, AniTrackerDbContext dbContext, 
         CancellationToken ct)
     {
-        if (!GetUserId(context, out var id))
-            return Results.BadRequest("Bad token");
+        if (!TryGetUserId(context, out var id))
+            return Results.BadRequest("Invalid token");
 
         var user = await dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id, ct);
 
         return user is null
-            ? Results.BadRequest($"User {id} not found")
+            ? Results.BadRequest($"User not found")
             : Results.Ok(new UserDto(user));
     }
 
     private static async ValueTask<IResult> DeleteCurrentUser(HttpContext context, AniTrackerDbContext dbContext,
         CancellationToken ct)
     {
-        if (!GetUserId(context, out var id))
+        if (!TryGetUserId(context, out var id))
             return Results.BadRequest("Bad token");
 
         var deletedUsers = await dbContext.Users
@@ -38,14 +38,14 @@ public static class MeEndpoints
             .ExecuteDeleteAsync(ct);
 
         return deletedUsers == 0
-            ? Results.BadRequest($"User {id} not found")
+            ? Results.BadRequest($"User not found")
             : Results.Ok();
     }
 
     private static async ValueTask<IResult> UpdateCurrentUser([FromBody] UpdateUserDto updateUserDto, HttpContext context, 
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
-        if (!GetUserId(context, out var id))
+        if (!TryGetUserId(context, out var id))
             return Results.BadRequest("Bad token");
 
         string? passwordHash = null;
@@ -63,11 +63,11 @@ public static class MeEndpoints
             }, ct);
 
         return updatedFields == 0
-            ? Results.NotFound($"User {id} not found")
+            ? Results.NotFound($"User not found")
             : Results.NoContent();
     }
 
-    private static bool GetUserId(HttpContext context, out Guid id)
+    private static bool TryGetUserId(HttpContext context, out Guid id)
     {
         var token = new JwtSecurityToken(context.Request.Cookies["token"]);
 

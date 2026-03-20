@@ -147,7 +147,7 @@ public static class UserMediaEndpoints
             .ExecuteDeleteAsync(ct);
         
         return deleted == 0 
-            ? Results.NotFound($"Media {mediaId} for user {id} not found")
+            ? Results.NotFound($"Media not found")
             : Results.Ok();
     }
 
