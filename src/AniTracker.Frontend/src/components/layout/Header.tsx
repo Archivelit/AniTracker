@@ -1,9 +1,14 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Tv } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import ThemeSwitchButton from "../ui/theme-switch-button";
+import useAuthenticationStorage from "@/hooks/useAuthenticationStore";
  
 export default function Header() {
+    const { user } = useAuthenticationStorage();
+
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -26,12 +31,23 @@ export default function Header() {
                 
                 <ThemeSwitchButton />
 
-                <Button variant="ghost" size="sm" asChild className="border border-muted">
-                    <Link href="/login">Log in</Link>
-                </Button>
-                <Button size="sm" asChild>
-                    <Link href="/signup">Sign up</Link>
-                </Button>
+                <div>
+                    {
+                    user === null ?
+                    <> 
+                        <Button variant="ghost" size="sm" asChild className="border border-muted mx-1">
+                            <Link href="/login">Log in</Link>
+                        </Button>
+
+                        <Button size="sm" className="mx-1" asChild>
+                            <Link href="/signup">Sign up</Link>
+                        </Button> 
+                    </>
+                    :
+                    <div></div>
+                    }
+                    
+                </div>
             </nav>
     
         </div>

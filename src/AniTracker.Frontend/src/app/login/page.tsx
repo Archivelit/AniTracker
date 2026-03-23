@@ -7,7 +7,7 @@ import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import type { FetchResult } from "@/models/fetchResult";
 import type LoginResponse from "@/types/Interfaces/LoginResponse";
 
-export default async function Login() {
+export default async function Login() {   
     const loginHandler = async (data: LoginFormData): Promise<FetchResult<LoginResponse>> => {
         "use server";
         const response: FetchResult<LoginResponse> = await login(data);
@@ -15,6 +15,7 @@ export default async function Login() {
         if (response.success) {
             const cookieStore = await cookies();
             cookieStore.set("token", response.result.token, { maxAge: 60 * 15 });
+            setAuthenticated(true);
         }
 
         return response;
