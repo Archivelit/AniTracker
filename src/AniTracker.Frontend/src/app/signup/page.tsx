@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import RegisterForm from "@/components/forms/register";
-import registerHandler from "@/handlers/registerHandler";
+import registrationHandler from "@/handlers/registrationHandler";
 
 export const metadata: Metadata = {
     title: "Sign Up",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default async function Signup() {
     return (
         <main className="justify-center items-center flex min-h-screen">
-            <RegisterForm registerHandler={registerHandler} />
+            <RegisterForm registrationHandler={registrationHandler} />
         </main>
     );
 }
