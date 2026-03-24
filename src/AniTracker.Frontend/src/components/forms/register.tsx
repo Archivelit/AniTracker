@@ -1,33 +1,44 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import type { FetchResult } from "@/models/fetchResult";
 import { Input } from "../ui/input";
 import { registrationValidationSchema } from "@/utils/ValidationSchemes";
-import { cn } from "@/lib/utils";
+import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
+import useAuthenticationStorage from "@/hooks/useAuthenticationStore";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import type User from "@/models/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { FetchResult } from "@/models/fetchResult";
-import type RegisterData from "@/types/Interfaces/RegisterData";
+import AuthenticatedHero from "../authenticatedHero";
 
 type Props = {
-    registerHandler: (data: RegisterFormData) => Promise<FetchResult<RegisterData>>;
+    registerHandler: (data: RegisterFormData) => Promise<FetchResult<User>>;
 };
 
 export default function RegisterForm({ registerHandler }: Props) {
+    const { user, setUser } = useAuthenticationStorage();
+    const router = useRouter();
+    
     const { register, handleSubmit, formState, setError } = useForm<RegisterFormData>({
         resolver: zodResolver(registrationValidationSchema)
     });
 
     const onSubmit = async (data: RegisterFormData) => {
-        const result = await registerHandler(data);
-        if (!result.success) {
-            setError("root", { message: `${result.statusCode.toString()} ${result.message}` });
+        const registerUserResult = await registerHandler(data);
+        if (!registerUserResult.success) {
+            setError("root", { message: `${registerUserResult.statusCode.toString()} ${registerUserResult.message}` });
+        } else {
+            setUser(registerUserResult.result);
+            router.push("/");
         }
     };
 
     return (
-        <div className="flex justify-center items-center sm:min-w-80 min-w-screen">
+        <>
+        {user === null ? 
+            <div className="flex justify-center items-center sm:min-w-80 min-w-screen">
             <div className="relative w-full">
                 {formState.errors.root && (
                     <div className="absolute top-0 left-0 right-0 text-base m-2 text-center">
@@ -122,5 +133,9 @@ export default function RegisterForm({ registerHandler }: Props) {
                 </form>
             </div>
         </div>
+        :
+        <AuthenticatedHero />
+        }
+        </>
     );
 }

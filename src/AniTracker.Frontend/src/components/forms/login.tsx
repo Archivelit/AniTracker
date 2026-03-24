@@ -8,26 +8,36 @@ import { loginValidationSchema } from "@/utils/ValidationSchemes";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FetchResult } from "@/models/fetchResult";
-import type LoginResponse from "@/types/Interfaces/LoginResponse";
+import { useRouter } from "next/navigation";
+import useAuthenticationStorage from "@/hooks/useAuthenticationStore";
+import type User from "@/models/user";
+import AuthenticatedHero from "../authenticatedHero";
 
 type Props = {
-    loginHandler: (data: LoginFormData) => Promise<FetchResult<LoginResponse>>;
+    loginHandler: (data: LoginFormData) => Promise<FetchResult<User>>;
 };
 
 export default function LoginForm({ loginHandler }: Props) {
+    const router = useRouter();
+    const { user, setUser } = useAuthenticationStorage();
+
     const { register, handleSubmit, formState, setError } = useForm<LoginFormData>({
         resolver: zodResolver(loginValidationSchema)
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        var result = await loginHandler(data);
-        if (!result.success) {
-            setError("root", { message: `${result.statusCode.toString()} ${result.message}` });
+        var loginResult = await loginHandler(data);
+        if (!loginResult.success) {
+            setError("root", { message: `${loginResult.statusCode.toString()} ${loginResult.message}` });
+        } else {
+            router.push("/");
+            setUser(loginResult.result);
         }
     };
 
     return (
         <div className="flex justify-center items-center min-w-screen sm:min-w-80">
+            {user === null ?
             <div className="relative w-full">
                 {formState.errors.root && (
                     <div className="absolute top-0 left-0 right-0 text-base m-2 text-center">
@@ -81,6 +91,9 @@ export default function LoginForm({ loginHandler }: Props) {
                     </div>
                 </form>
             </div>
+            :
+            <AuthenticatedHero />
+            }
         </div>
     );
 }
