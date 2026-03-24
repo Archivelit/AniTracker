@@ -29,6 +29,14 @@ builder.Services
             
             ClockSkew = TimeSpan.Zero
         };
+        options.Events.OnMessageReceived = context =>
+        {
+            if (context.Request.Cookies.TryGetValue("token", out var token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        };
     });
 
 builder.Services.AddAuthorization();

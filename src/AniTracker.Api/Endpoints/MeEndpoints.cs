@@ -2,6 +2,8 @@
 
 public static class MeEndpoints
 {
+    private static readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+
     public static void MapMeEndpoints(this WebApplication app)
     {
         app.MapGet("/me", GetCurrentUser);
@@ -16,7 +18,7 @@ public static class MeEndpoints
         CancellationToken ct)
     {
         if (!TryGetUserId(context, out var id))
-            return Results.BadRequest("Invalid token");
+            return Results.UnprocessableEntity("Invalid token");
 
         var user = await dbContext.Users
             .AsNoTracking()
@@ -31,7 +33,7 @@ public static class MeEndpoints
         CancellationToken ct)
     {
         if (!TryGetUserId(context, out var id))
-            return Results.BadRequest("Bad token");
+            return Results.UnprocessableEntity("Invalid token");
 
         var deletedUsers = await dbContext.Users
             .Where(u => u.Id == id)
@@ -46,7 +48,7 @@ public static class MeEndpoints
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
         if (!TryGetUserId(context, out var id))
-            return Results.BadRequest("Bad token");
+            return Results.UnprocessableEntity("Invalid token");
 
         string? passwordHash = null;
 
@@ -69,7 +71,12 @@ public static class MeEndpoints
 
     private static bool TryGetUserId(HttpContext context, out Guid id)
     {
-        var token = new JwtSecurityToken(context.Request.Cookies["token"]);
+        var token = _jwtSecurityTokenHandler.ReadJwtToken(context.Request.Cookies["token"]);
+        if (token is null)
+        {
+            id = Guid.Empty;
+            return false;
+        }
 
         var idStr = token.Claims
             .First(c => c.Type == ClaimTypes.NameIdentifier)

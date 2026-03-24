@@ -6,8 +6,8 @@ public static class IdentityEndpoints
         .AddEndpointFilter<UserCredentialsValidationFilter>()
         .AllowAnonymous();
 
-    private static async Task<IResult> Login([FromBody] LoginUserDto dto, AniTrackerDbContext dbContext, 
-        IPasswordHasher hasher, ITokenFactory tokenFactory)
+    private static async Task<IResult> Login([FromBody] LoginUserDto dto, HttpContext context, 
+        AniTrackerDbContext dbContext, IPasswordHasher hasher, ITokenFactory tokenFactory)
     {
         var user = await dbContext.Users
             .AsNoTracking()
@@ -20,7 +20,8 @@ public static class IdentityEndpoints
             return Results.BadRequest("Invalid password");
 
         var token = tokenFactory.CreateToken(user);
-
+        if (string.IsNullOrEmpty(token)) return Results.InternalServerError("Unable to create token");
+        
         return Results.Ok(token);
     }
 }
