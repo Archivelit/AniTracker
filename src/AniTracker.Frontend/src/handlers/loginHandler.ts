@@ -1,3 +1,5 @@
+"use server";
+
 import type { FetchResult } from "@/models/fetchResult";
 import type User from "@/models/user";
 import { login } from "@/services/AuthService";
@@ -7,7 +9,6 @@ import type LoginResponse from "@/types/Interfaces/LoginResponse";
 import { cookies } from "next/headers";
 
 const loginHandler = async (data: LoginFormData): Promise<FetchResult<User>> => {
-    "use server";
     const loginResponse: FetchResult<LoginResponse> = await login(data);
     
     if (!loginResponse.success) {

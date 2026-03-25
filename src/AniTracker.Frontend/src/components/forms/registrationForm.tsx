@@ -1,23 +1,20 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import useRegistration from "@/hooks/useRegistration";
+import { registrationValidationSchema } from "@/utils/ValidationSchemes";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import type { FetchResult } from "@/models/fetchResult";
-import { registrationValidationSchema } from "@/utils/ValidationSchemes";
-import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
-import useAuthenticationStorage from "@/hooks/useAuthenticationStore";
-import { useForm } from "react-hook-form";
-import type User from "@/models/user";
-import { zodResolver } from "@hookform/resolvers/zod";
-import AuthenticatedHero from "../authenticatedHero";
 import FormField from "../ui/formField";
-import useRegistration from "@/hooks/useRegistration";
+import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
+import type User from "@/models/user";
 
 type Props = {
     registrationHandler: (data: RegisterFormData) => Promise<FetchResult<User>>;
 };
 
 export default function RegisterForm({ registrationHandler }: Props) {
-    const { user } = useAuthenticationStorage();
     const registerUser = useRegistration({registrationHandler});
     
     const { register, handleSubmit, formState, setError } = useForm<RegisterFormData>({
@@ -29,9 +26,7 @@ export default function RegisterForm({ registrationHandler }: Props) {
     };
 
     return (
-        <>
-        {user === null ? 
-            <div className="flex justify-center items-center sm:min-w-80 min-w-screen">
+        <div className="flex justify-center items-center sm:min-w-80 min-w-screen">
             <div className="relative w-full">
                 {formState.errors.root && (
                     <div className="absolute top-0 left-0 right-0 text-base m-2 text-center">
@@ -78,9 +73,5 @@ export default function RegisterForm({ registrationHandler }: Props) {
                 </form>
             </div>
         </div>
-        :
-        <AuthenticatedHero />
-        }
-        </>
     );
 }
