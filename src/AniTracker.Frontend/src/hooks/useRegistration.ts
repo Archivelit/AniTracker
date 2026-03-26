@@ -1,25 +1,34 @@
 import type { FetchResult } from "@/models/fetchResult";
-import type User from "@/models/user";
 import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
-import useAuthenticationStorage from "./useAuthenticationStore";
 import { useRouter } from "next/navigation";
 import type { UseFormSetError } from "react-hook-form";
+import useAuthenticationStorage from "./useAuthenticationStore";
+import { Me } from "@/services/MeEndpoints";
 
 type Props = {
-    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<User>>;
+    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<void>>;
 };
 
 export default function useRegistration ({registrationHandler}: Props) {
-    const { setUser } = useAuthenticationStorage();
     const router = useRouter();
+    const { setUser } = useAuthenticationStorage();
 
     return async (data: RegisterFormData, setError: UseFormSetError<RegisterFormData>) => {
         const registerUserResult = await registrationHandler(data);
+        
         if (!registerUserResult.success) {
             setError("root", { message: `${registerUserResult.statusCode.toString()} ${registerUserResult.message}` });
-        } else {
-            setUser(registerUserResult.result);
-            router.push("/");
+            return;
         }
+
+        const meResult = await Me();
+        if (meResult === null) {
+            setError("root", { message: "500 Unexpected error occured"});
+            return;
+        }
+        
+        setUser(meResult);
+        
+        router.push("/me");
     }
 }

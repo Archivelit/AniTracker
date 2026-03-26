@@ -1,6 +1,5 @@
 "use client";
 
-import loginHandler from "@/handlers/loginHandler";
 import useAuthenticationStorage from "@/hooks/useAuthenticationStore";
 import AuthenticatedHero from "../authenticatedHero";
 import Login from "../forms/loginForm";
@@ -12,5 +11,5 @@ export default function LoginClient() {
         return <AuthenticatedHero />;
     }
 
-    return <Login loginHandler={loginHandler} />;
+    return <Login />;
 }

@@ -1,19 +1,14 @@
-import type { FetchResult } from "@/models/fetchResult";
-import type User from "@/models/user";
+import loginHandler from "@/handlers/loginHandler";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import { useRouter } from "next/navigation";
-import useAuthenticationStorage from "./useAuthenticationStore";
 import type { UseFormSetError } from "react-hook-form";
+import useAuthenticationStorage from "./useAuthenticationStore";
+import { Me } from "@/services/MeEndpoints";
 
-
-type Props = {
-    loginHandler: (data: LoginFormData) => Promise<FetchResult<User>>;
-};
-
-const useLogin = ({ loginHandler }: Props) => {
+export default function useLogin() {
     const router = useRouter();
     const { setUser } = useAuthenticationStorage();
-    
+
     return async (data: LoginFormData, setError: UseFormSetError<LoginFormData>) => {
         const loginResult = await loginHandler(data);
 
@@ -22,10 +17,15 @@ const useLogin = ({ loginHandler }: Props) => {
             return;
         }
 
-        setUser(loginResult.result);
-        router.push("/");
+        const meResult = await Me();
+        
+        if (meResult === null) {
+            setError("root", { message: "500 Unexpected error occurred" });
+            return;
+        }
+        
+        setUser(meResult);
+
+        router.push("/me/medias");
     };
-
 }
-
-export default useLogin;

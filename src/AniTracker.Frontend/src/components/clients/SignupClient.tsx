@@ -8,11 +8,11 @@ import RegisterForm from "../forms/registrationForm";
 export default function SignupClient() {
     const { user } = useAuthenticationStorage();
 
-    if (user === null) {
-        return <RegisterForm registrationHandler={registrationHandler} />
+    if (user) {
+        return <AuthenticatedHero />
     }
-
+    
     return(
-        <AuthenticatedHero />
+        <RegisterForm registrationHandler={registrationHandler} />
     );
 }

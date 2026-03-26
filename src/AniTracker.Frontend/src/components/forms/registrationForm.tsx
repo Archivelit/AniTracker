@@ -8,10 +8,9 @@ import { Button } from "../ui/button";
 import type { FetchResult } from "@/models/fetchResult";
 import FormField from "../ui/formField";
 import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
-import type User from "@/models/user";
 
 type Props = {
-    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<User>>;
+    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<void>>;
 };
 
 export default function RegisterForm({ registrationHandler }: Props) {

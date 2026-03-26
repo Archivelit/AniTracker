@@ -1,26 +1,37 @@
 "use server";
 
 import type { FetchResult } from "@/models/fetchResult";
-import type User from "@/models/user";
-import { login } from "@/services/AuthService";
-import { Me } from "@/services/MeEndpoints";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
-import type LoginResponse from "@/types/Interfaces/LoginResponse";
 import { cookies } from "next/headers";
+import { api } from "@/utils/Api";
+import { isAxiosError } from "axios";
 
-const loginHandler = async (data: LoginFormData): Promise<FetchResult<User>> => {
-    const loginResponse: FetchResult<LoginResponse> = await login(data);
+async function loginHandler (data: LoginFormData): Promise<FetchResult<void>> {
+    "use server";
+
+    try {
+        const response = await api.post("/auth/login", data);
+        const cookieStore = await cookies();
+        cookieStore.set("token", response.data, { maxAge: 60 * 15, httpOnly: true});
     
-    if (!loginResponse.success) {
-        return loginResponse;
-    }
-
-    const cookieStore = await cookies();
-    cookieStore.set("token", loginResponse.result.token, { maxAge: 60 * 15 })
-    
-    const getUserResult = await Me();
-
-    return getUserResult;
+        return {
+            success: true,
+            result: undefined
+        }
+    } catch (err) {
+        if (isAxiosError(err)) {
+            return {
+                success: false,
+                message: err.response?.data,
+                statusCode: err.response?.status ?? 500
+            };
+        }
+        return {
+            success: false,
+            message: "Unexpected error occurred",
+            statusCode: 500
+        };
+    }    
 };
 
 export default loginHandler;

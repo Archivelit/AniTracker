@@ -1,5 +1,6 @@
-import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type User from "@/models/user";
+import { create } from "zustand";
 
 export type AuthenticationState = {
     user: User | null
@@ -7,10 +8,15 @@ export type AuthenticationState = {
     logOut: () => void
 }
 
-const useAuthenticationStorage = create<AuthenticationState>((set) => ({
-    user: null,
-    setUser: (user: User) => set({ user }),
-    logOut: () => set(() => ({user: null}))
-}));
+const useAuthenticationStore = create<AuthenticationState>()((
+    persist<AuthenticationState>(
+        (set) => ({
+        user: null,
+        setUser: (user: User) => set({ user }),
+        logOut: () => set({ user: null }),
+        }),
+        { name: "auth-storage" }
+    ))
+);
 
-export default useAuthenticationStorage;
+export default useAuthenticationStore;

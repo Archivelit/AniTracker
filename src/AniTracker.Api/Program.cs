@@ -1,7 +1,10 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddOpenApi();
-builder.Services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(builder.Configuration).AddConsole());
+builder.Services.AddHttpLogging();
+builder.Logging.AddConsole();
 builder.Services.AddDbContext<AniTrackerDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("api-database"));
@@ -26,22 +29,12 @@ builder.Services
             ValidateIssuerSigningKey = true,
 
             IssuerSigningKey = new SymmetricSecurityKey(TokenSecretProvider.Secret),
-            
+
             ClockSkew = TimeSpan.Zero
-        };
-        options.Events.OnMessageReceived = context =>
-        {
-            if (context.Request.Cookies.TryGetValue("token", out var token))
-            {
-                context.Token = token;
-            }
-            return Task.CompletedTask;
         };
     });
 
 builder.Services.AddAuthorization();
-
-builder.AddServiceDefaults();
 
 var app = builder.Build();
 

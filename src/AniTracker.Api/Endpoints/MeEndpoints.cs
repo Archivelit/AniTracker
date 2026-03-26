@@ -1,9 +1,9 @@
-﻿namespace AniTracker.Api.Endpoints;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace AniTracker.Api.Endpoints;
 
 public static class MeEndpoints
 {
-    private static readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-
     public static void MapMeEndpoints(this WebApplication app)
     {
         app.MapGet("/me", GetCurrentUser);
@@ -14,11 +14,12 @@ public static class MeEndpoints
         app.MapDelete("/me", DeleteCurrentUser);
     }
 
-    private static async ValueTask<IResult> GetCurrentUser(HttpContext context, AniTrackerDbContext dbContext, 
-        CancellationToken ct)
+    [Authorize]
+    private static async ValueTask<IResult> GetCurrentUser(HttpContext context, AniTrackerDbContext dbContext,
+        ILoggerFactory factory, CancellationToken ct)
     {
         if (!TryGetUserId(context, out var id))
-            return Results.UnprocessableEntity("Invalid token");
+            return LogAndReturnInvalidToken(factory.CreateLogger("MeEndpoints"));
 
         var user = await dbContext.Users
             .AsNoTracking()
@@ -29,6 +30,7 @@ public static class MeEndpoints
             : Results.Ok(new UserDto(user));
     }
 
+    [Authorize]
     private static async ValueTask<IResult> DeleteCurrentUser(HttpContext context, AniTrackerDbContext dbContext,
         CancellationToken ct)
     {
@@ -44,6 +46,7 @@ public static class MeEndpoints
             : Results.Ok();
     }
 
+    [Authorize]
     private static async ValueTask<IResult> UpdateCurrentUser([FromBody] UpdateUserDto updateUserDto, HttpContext context, 
         AniTrackerDbContext dbContext, IPasswordHasher hasher, CancellationToken ct)
     {
@@ -69,18 +72,15 @@ public static class MeEndpoints
             : Results.NoContent();
     }
 
+    private static IResult LogAndReturnInvalidToken(ILogger logger)
+    {
+        logger.LogError("Got invalid token");
+        return Results.UnprocessableEntity("Invalid token");
+    }
+
     private static bool TryGetUserId(HttpContext context, out Guid id)
     {
-        var token = _jwtSecurityTokenHandler.ReadJwtToken(context.Request.Cookies["token"]);
-        if (token is null)
-        {
-            id = Guid.Empty;
-            return false;
-        }
-
-        var idStr = token.Claims
-            .First(c => c.Type == ClaimTypes.NameIdentifier)
-            .Value;
+        var idStr = context.User.FindFirstValue(JwtRegisteredClaimNames.NameId);
 
         return Guid.TryParse(idStr, out id);
     }

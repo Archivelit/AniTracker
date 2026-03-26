@@ -51,7 +51,7 @@ public static class Extensions
         {
             logging.IncludeFormattedMessage = true;
             logging.IncludeScopes = true;
-        });
+        }).SetMinimumLevel(LogLevel.Trace);
 
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>

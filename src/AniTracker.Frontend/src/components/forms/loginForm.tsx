@@ -5,24 +5,20 @@ import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import { Button } from "../ui/button";
 import { loginValidationSchema } from "@/utils/ValidationSchemes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { FetchResult } from "@/models/fetchResult";
-import type User from "@/models/user";
 import FormField from "../ui/formField";
+
 import useLogin from "@/hooks/useLogin";
 
-type Props = {
-    loginHandler: (data: LoginFormData) => Promise<FetchResult<User>>;
-};
 
-export default function LoginForm({ loginHandler }: Props) {
-    const handleLogin = useLogin({loginHandler});
+export default function LoginForm() {
+    const handleLogin = useLogin();
 
     const { register, handleSubmit, formState, setError } = useForm<LoginFormData>({
         resolver: zodResolver(loginValidationSchema)
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        handleLogin(data, setError);
+        await handleLogin(data, setError);
     };
 
     return (

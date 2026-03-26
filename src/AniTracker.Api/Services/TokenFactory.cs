@@ -23,8 +23,8 @@ internal sealed class TokenFactory : ITokenFactory
 
     private static Claim[] GetClaims(User user) =>
         [
-            new(JwtRegisteredClaimNames.Sub, user.Email),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
             new(ClaimTypes.Role, Enum.GetName(user.Role)!)
         ];
 }
