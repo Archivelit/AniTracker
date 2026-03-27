@@ -11,9 +11,9 @@ export type AuthenticationState = {
 const useAuthenticationStore = create<AuthenticationState>()((
     persist<AuthenticationState>(
         (set) => ({
-        user: null,
-        setUser: (user: User) => set({ user }),
-        logOut: () => set({ user: null }),
+            user: null,
+            setUser: (user: User) => set({ user }),
+            logOut: () => set({ user: null }),
         }),
         { name: "auth-storage" }
     ))
