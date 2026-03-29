@@ -1,6 +1,8 @@
 import DefaultMediaDialog from "@/components/dialogs/defaultMediaDialog";
+import UpdateMediaDialog from "@/components/dialogs/updateMediaDialog";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
+import { Drop } from "@/components/ui/drop";
 import MediaCard from "@/components/ui/mediaCard";
 import MediaStatus from "@/enums/mediaStatus";
 import WatchStatus from "@/enums/watchStatus";
@@ -35,11 +37,11 @@ export default async function MyMedias() {
         return(
             <>
                 <DialogClose asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" className="cursor-pointer">
                         Cancel
                     </Button>
                 </DialogClose>
-                <Button type="submit">
+                <Button type="submit" className="cursor-pointer">
                     Update
                 </Button>
             </>
@@ -49,36 +51,27 @@ export default async function MyMedias() {
     return (
         <main className="min-h-screen flex justify-center">
             <div className="h-fit flex w-7xl mx-auto">
-                <DefaultMediaDialog dialogTrigger={
-                    <div>
-                        <MediaCard media={testMedia} userMedia={testUserMedia} />
-                    </div>
-                }
-                dialogDescription="Sort of description"
-                dialogTitle="Some title"
-                dialogFooter={<DialogFooter/>}>
-                    <h1>Welcome to my dialog!</h1>
-                </DefaultMediaDialog>
-                <DefaultMediaDialog dialogTrigger={
-                    <div>
-                        <MediaCard media={testMedia} userMedia={testUserMedia} />
-                    </div>
-                }
-                dialogDescription="Sort of description"
-                dialogTitle="Some title"
-                dialogFooter={<DialogFooter/>}>
-                    <h1>Welcome to my dialog!</h1>
-                </DefaultMediaDialog>
-                <DefaultMediaDialog dialogTrigger={
-                    <div>
-                        <MediaCard media={testMedia} userMedia={testUserMedia} />
-                    </div>
-                }
-                dialogDescription="Sort of description"
-                dialogTitle="Some title"
-                dialogFooter={<DialogFooter/>}>
-                    <h1>Welcome to my dialog!</h1>
-                </DefaultMediaDialog>
+                <UpdateMediaDialog  media={testMedia} userMedia={testUserMedia} 
+                    dialogTrigger={
+                        <div>
+                            <MediaCard media={testMedia} userMedia={testUserMedia} />
+                        </div>
+                    }
+                />
+                <UpdateMediaDialog  media={testMedia} userMedia={testUserMedia} 
+                    dialogTrigger={
+                        <div>
+                            <MediaCard media={testMedia} userMedia={testUserMedia} />
+                        </div>
+                    }
+                />
+                <UpdateMediaDialog  media={testMedia} userMedia={testUserMedia} 
+                    dialogTrigger={
+                        <div>
+                            <MediaCard media={testMedia} userMedia={testUserMedia} />
+                        </div>
+                    }
+                />
             </div>
         </main>
     )

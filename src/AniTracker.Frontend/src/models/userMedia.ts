@@ -1,6 +1,7 @@
 import type WatchStatus from "@/enums/watchStatus";
 
 type UserMedia = {
+    watchStatus: WatchStatus | undefined;
     id: string;
     userId: string;
     mediaId: string;

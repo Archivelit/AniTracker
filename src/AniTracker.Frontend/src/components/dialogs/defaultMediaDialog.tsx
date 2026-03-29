@@ -1,4 +1,4 @@
-import type { JSX } from "react"
+import type { JSX, SubmitEventHandler } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 type Props = {
     dialogTrigger: JSX.Element;
@@ -15,33 +15,34 @@ type Props = {
     children: JSX.Element;
     dialogDescription: string;
     dialogTitle: string;
+    onSubmit?: SubmitEventHandler<HTMLFormElement>;
 };
 
 
-export default function DefaultMediaFormDialog({ dialogTrigger, dialogFooter, children, dialogDescription, dialogTitle }: Props) {
+export default function DefaultMediaFormDialog({ dialogTrigger, dialogFooter, children, dialogDescription, dialogTitle, onSubmit }: Props) {
     return (
         <Dialog>
-            <form>
+            <form onSubmit={onSubmit}>
                 <DialogTrigger asChild>
                     {dialogTrigger}
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-sm px-0 pb-4">
-                <DialogHeader className="px-4">
-                    <DialogTitle>
-                        {dialogTitle}
-                    </DialogTitle>
-                    <DialogDescription>
-                        {dialogDescription}
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="px-4">
-                    {children}
-                </div>
-                <div className="border-t px-4">
-                    <DialogFooter className="pt-4">
-                        {dialogFooter}
-                    </DialogFooter>
-                </div>
+                <DialogContent className="sm:max-w-5xl max-w-lg h-fit px-0 gap-2 flex flex-col" showCloseButton={false}>
+                    <DialogHeader className="px-4">
+                        <DialogTitle>
+                            {dialogTitle}
+                        </DialogTitle>
+                        <DialogDescription>
+                            {dialogDescription}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="p-4 flex-1">
+                        {children}
+                    </div>
+                    <div className="border-t px-4">
+                        <DialogFooter className="pt-6 m-0">
+                            {dialogFooter}
+                        </DialogFooter>
+                    </div>
                 </DialogContent>
             </form>
         </Dialog>
