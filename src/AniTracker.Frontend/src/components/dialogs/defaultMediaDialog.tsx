@@ -22,11 +22,11 @@ type Props = {
 export default function DefaultMediaFormDialog({ dialogTrigger, dialogFooter, children, dialogDescription, dialogTitle, onSubmit }: Props) {
     return (
         <Dialog>
-            <form onSubmit={onSubmit}>
-                <DialogTrigger asChild>
-                    {dialogTrigger}
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-5xl max-w-lg h-fit px-0 gap-2 flex flex-col" showCloseButton={false}>
+            <DialogTrigger asChild>
+                {dialogTrigger}
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-5xl max-w-lg h-fit px-0 gap-2 flex flex-col" showCloseButton={false}>
+                <form onSubmit={onSubmit}>
                     <DialogHeader className="px-4">
                         <DialogTitle>
                             {dialogTitle}
@@ -43,8 +43,8 @@ export default function DefaultMediaFormDialog({ dialogTrigger, dialogFooter, ch
                             {dialogFooter}
                         </DialogFooter>
                     </div>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     )
 }

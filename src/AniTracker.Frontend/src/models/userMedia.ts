@@ -1,11 +1,10 @@
 import type WatchStatus from "@/enums/watchStatus";
 
 type UserMedia = {
-    watchStatus: WatchStatus | undefined;
+    watchStatus: WatchStatus;
     id: string;
     userId: string;
     mediaId: string;
-    status: WatchStatus;
     rating: number | null;
     episodesWatched: number;
     startDate: Date | null;
