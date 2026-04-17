@@ -24,7 +24,6 @@ export default async function MyMedias() {
         rating: 4,
         episodesWatched: 10,
         startDate: new Date(),
-        completedDate: null,
         isFavorite: true,
     }
 

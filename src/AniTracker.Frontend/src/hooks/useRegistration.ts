@@ -1,4 +1,4 @@
-import type { FetchResult } from "@/models/fetchResult";
+import type { GenericFetchResult } from "@/models/fetchResult";
 import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 import { useRouter } from "next/navigation";
 import type { UseFormSetError } from "react-hook-form";
@@ -6,7 +6,7 @@ import useAuthenticationStorage from "./useAuthenticationStore";
 import { Me } from "@/services/MeEndpoints";
 
 type Props = {
-    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<void>>;
+    registrationHandler: (data: RegisterFormData) => Promise<GenericFetchResult<void>>;
 };
 
 export default function useRegistration ({registrationHandler}: Props) {

@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import { Button } from "../ui/button";
-import { loginValidationSchema } from "@/utils/ValidationSchemes";
+import { loginValidationSchema } from "@/utils/ValidationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormField from "../ui/formField";
 

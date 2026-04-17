@@ -7,11 +7,14 @@ import DefaultMediaDialog from "./defaultMediaDialog";
 import { DialogClose } from "../ui/dialog";
 import { Drop } from "../ui/drop";
 import type { JSX } from "react/jsx-dev-runtime";
-import type WatchStatus from "@/enums/watchStatus";
 import { Input } from "../ui/input";
 import type Media from "@/models/media";
 import type UserMedia from "@/models/userMedia";
 import { DatePicker } from "../ui/datePicker";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { updateUserMediaValidationSchema } from "@/utils/ValidationSchemas";
+import type { UpdateUserMediaFormData } from "@/types/Forms/updateUserMediaFormData";
+import handleUserMediaUpdate from "@/handlers/updateUserMediaHandler";
 
 type Props = {
     dialogTrigger: JSX.Element;
@@ -19,29 +22,19 @@ type Props = {
     userMedia: UserMedia;
 };
 
-type UpdateMediaFormData = {
-    watchStatus: WatchStatus;
-    rating: number;
-    title: string;
-    episodesWatched: number;
-    startDate: Date | null;
-    completedDate: Date | null;
-}
-
 export default function UpdateMediaDialog({ dialogTrigger, media, userMedia }: Props) {
-    const { control, register, handleSubmit, formState } = useForm<UpdateMediaFormData>({ defaultValues: {
+    const { control, register, handleSubmit, formState } = useForm<UpdateUserMediaFormData>({ defaultValues: {
             watchStatus: userMedia.watchStatus,
             rating: userMedia.rating ?? 0,
-            title: media.title,
             episodesWatched: userMedia.episodesWatched,
-            startDate: userMedia.startDate ? new Date(userMedia.startDate) : null,
-            completedDate: userMedia.completedDate ? new Date(userMedia.completedDate) : null,
-        }
+            startDate: userMedia.startDate ? new Date(userMedia.startDate) : undefined,
+            completedDate: userMedia.completedDate ? new Date(userMedia.completedDate) : undefined,
+        },
+        resolver: zodResolver(updateUserMediaValidationSchema)
     });
     
-    function onSubmit(data: UpdateMediaFormData): Promise<void> {
-        // TODO: implement update media logic
-        return Promise.resolve();
+    async function onSubmit(data: UpdateUserMediaFormData): Promise<void> {
+        await handleUserMediaUpdate(data, userMedia, media);
     }
 
     function DialogFooter(): JSX.Element {
@@ -61,8 +54,8 @@ export default function UpdateMediaDialog({ dialogTrigger, media, userMedia }: P
 
     return(
         <DefaultMediaDialog dialogTrigger={dialogTrigger}
-            dialogDescription="Sort of description"
-            dialogTitle="Some title"
+            dialogDescription={media.synopsis}
+            dialogTitle={media.title}
             dialogFooter={<DialogFooter/>}
             onSubmit={handleSubmit(onSubmit)}
         >
@@ -123,13 +116,6 @@ export default function UpdateMediaDialog({ dialogTrigger, media, userMedia }: P
                         </span>
                     </div>
                     
-                    <Input placeholder="Title" 
-                        className="w-lg mb-4"
-                        {...register("title", {
-                            required: true,
-                        })}
-                    />
-                    
                     <div className="flex gap-4">
                         <Controller control={control}
                             name="startDate"
@@ -148,6 +134,5 @@ export default function UpdateMediaDialog({ dialogTrigger, media, userMedia }: P
                 </div>
             </div>
         </DefaultMediaDialog>
-        
     );
 }

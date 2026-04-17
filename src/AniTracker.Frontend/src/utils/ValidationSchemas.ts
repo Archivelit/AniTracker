@@ -25,3 +25,11 @@ export const registrationValidationSchema = z.object({
     message: "Passwords don't match",
     path: ["confirmPassword"]
 });
+
+export const updateUserMediaValidationSchema = z.object({
+    watchStatus: z.number().min(0).max(4),
+    rating: z.number().min(0).max(10),
+    episodesWatched: z.number().min(0),
+    startDate: z.optional(z.date()),
+    completedDate: z.optional(z.date()),
+});

@@ -1,15 +1,9 @@
 import type WatchStatus from "@/enums/watchStatus";
 
-type UserMedia = {
+export type UpdateUserMediaFormData = {
     watchStatus: WatchStatus;
-    id: string;
-    userId: string;
-    mediaId: string;
-    rating?: number;
+    rating: number;
     episodesWatched: number;
     startDate?: Date;
     completedDate?: Date;
-    isFavorite: boolean;
-}
-
-export default UserMedia;
+};

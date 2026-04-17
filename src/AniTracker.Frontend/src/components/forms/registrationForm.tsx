@@ -2,15 +2,15 @@
 
 import { useForm } from "react-hook-form";
 import useRegistration from "@/hooks/useRegistration";
-import { registrationValidationSchema } from "@/utils/ValidationSchemes";
+import { registrationValidationSchema } from "@/utils/ValidationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
-import type { FetchResult } from "@/models/fetchResult";
+import type { GenericFetchResult } from "@/models/fetchResult";
 import FormField from "../ui/formField";
 import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 
 type Props = {
-    registrationHandler: (data: RegisterFormData) => Promise<FetchResult<void>>;
+    registrationHandler: (data: RegisterFormData) => Promise<GenericFetchResult<void>>;
 };
 
 export default function RegisterForm({ registrationHandler }: Props) {

@@ -1,12 +1,12 @@
 "use server";
 
-import type { FetchResult } from "@/models/fetchResult";
+import type { GenericFetchResult } from "@/models/fetchResult";
 import type { LoginFormData } from "@/types/Forms/LoginFormData";
 import { cookies } from "next/headers";
 import { api } from "@/utils/Api";
 import { isAxiosError } from "axios";
 
-async function loginHandler (data: LoginFormData): Promise<FetchResult<void>> {
+async function loginHandler (data: LoginFormData): Promise<GenericFetchResult<void>> {
     "use server";
 
     try {

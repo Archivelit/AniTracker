@@ -13,7 +13,7 @@ type Props = {
     dialogTrigger: JSX.Element;
     dialogFooter: JSX.Element;
     children: JSX.Element;
-    dialogDescription: string;
+    dialogDescription?: string;
     dialogTitle: string;
     onSubmit?: SubmitEventHandler<HTMLFormElement>;
 };

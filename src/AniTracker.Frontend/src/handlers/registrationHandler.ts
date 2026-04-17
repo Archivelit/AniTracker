@@ -1,12 +1,12 @@
 "use server";
 
-import type { FetchResult } from "@/models/fetchResult";
+import type { GenericFetchResult } from "@/models/fetchResult";
 import type { RegisterFormData } from "@/types/Forms/RegisterFormData";
 import { api } from "@/utils/Api";
 import { isAxiosError } from "axios";
 import { cookies } from "next/headers";
 
-export default async function registrationHandler(data: RegisterFormData): Promise<FetchResult<void>> {
+export default async function registrationHandler(data: RegisterFormData): Promise<GenericFetchResult<void>> {
     "use server";
 
     try {

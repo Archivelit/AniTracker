@@ -4,9 +4,9 @@ type Media = {
     id: string,
     title: string,
     episodes: number,
-    synopsis?: string | undefined,
+    synopsis?: string,
     airedFrom: Date,
-    airedTo: Date,
+    airedTo?: Date,
     status: MediaStatus 
 }
 
